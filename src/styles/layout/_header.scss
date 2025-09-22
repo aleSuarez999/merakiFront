@@ -1,0 +1,23 @@
+@use "../abstracts/variables" as *;
+.header__content{
+     background-color: $color-primary;
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    z-index: 100;
+
+}
+
+.header__container{
+/*
+repetido se lleva al navbar
+padding: 0 1rem;
+display: flex;
+justify-content: space-around;
+
+align-items: center;
+*/
+}
+
+

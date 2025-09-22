@@ -1,15 +1,16 @@
 
-import CartProvider from '../context/CartProvider'
+import Provider from '../context/Provider'
 import AppRoutes from '../routes/AppRoutes'
 import Text from './Text'
+
 
 
 function App() {
 
   return (
-    <CartProvider>
+    <Provider>
       <AppRoutes />
-    </CartProvider>
+    </Provider>
   )
 }
 

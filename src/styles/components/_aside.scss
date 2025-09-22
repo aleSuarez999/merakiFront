@@ -1,0 +1,31 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+
+aside{
+    z-index: -1;
+    height: 100vh - 100;
+    display: flex;
+    width: 200px;
+    justify-content: start;
+    
+    nav{
+        margin-top: 2rem;
+        padding: 1rem 3rem 3rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content:flex-start;
+        gap: 0.5rem;
+        a {
+            color:black;
+            background-color: transparent;
+            vertical-align:top;
+            &::before{content: " ~ "}
+        }
+
+    }
+           @media screen and (max-width: map.get($grid-breakpoints, md)) {
+            display: none;
+            
+        }
+}

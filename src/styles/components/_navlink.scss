@@ -1,0 +1,14 @@
+@use "sass:map";
+@use "sass:color";
+@use "../abstracts/variables" as *;
+nav{
+    a.active {
+    color: $active-link;
+    }
+    a.pending {
+    color: blue;
+    }
+    a.transitioning {
+    view-transition-name: my-transition;
+    }
+}

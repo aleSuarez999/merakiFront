@@ -1,0 +1,36 @@
+@use "../abstracts/variables" as *;
+
+.footer__content{
+    background-color: $color-primary;
+    position: fixed;
+    bottom:0;
+    width: 100%;
+    left:0;
+    z-index: 100;
+.footer__container{
+    color: $color-text-header;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    a {
+        color: $color-text-header;
+        &:hover {
+         color: $color-secondary;
+        }
+    }
+    .footer__social{
+         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 2rem;
+        width: 10rem;
+        
+        }
+ 
+    }
+}
+
+
+
+
+

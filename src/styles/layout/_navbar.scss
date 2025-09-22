@@ -1,0 +1,76 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+
+.header__container{
+    align-items: center;
+    background-color: $color-primary;
+    color: $color-text-header;
+    width: 100%;
+    z-index: 100; 
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-around;
+
+    align-items: center;
+
+    nav{
+        display: flex;
+        gap: 1rem;
+        height: 50px;
+        right: 0;
+
+        
+        justify-content: space-between;
+        a {
+            padding: 1rem;
+            font-weight: 800;
+            color: $color-text-header;
+            margin: 0 1rem;
+
+            &:hover {
+            color: $color-secondary;
+            }
+        }
+        @media screen and (max-width: map.get($grid-breakpoints, md)) {
+            display: none;
+            
+        }
+    }
+     .navbar__menu-mobile{
+    
+       display: flex;
+       align-items: center;
+       gap: 1rem;
+       .navbar__menu-button{
+        position: relative;
+        background-color: transparent;
+        height: 100%;
+       
+    }
+        @media screen and (min-width: map.get($grid-breakpoints, sm)) {
+           display: none;
+            
+        }
+
+
+    }
+     .navbar_drawer-mobile{
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            li{
+                list-style: none;
+                a{
+                    text-decoration: none;
+                    &:hover{
+                        color: $color-secondary;
+                    }
+                      &:hover{
+                        color: $navbar-hover;
+                    }                  
+                }
+            }
+        }
+     }
+}

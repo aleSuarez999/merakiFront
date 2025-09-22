@@ -1,0 +1,61 @@
+@use "sass:map";
+
+@use "../abstracts/variables" as *;
+
+@use "../abstracts/mixins" as *;
+
+#root{
+  margin: 3rem 0;
+  padding: 0rem;
+  display: flex;
+  justify-content:flex-start;
+  align-items: start;
+  width: 100vw;
+  z-index: 1;
+   @media screen and (min-width: map.get($grid-width, xs) ) {
+         justify-content:center;
+    }
+}
+
+.container{
+    @include create-container-width();
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 1rem 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  width: 100%;
+  background-color: $color-background;
+
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 1.1;
+  margin: 0.5rem 0;
+  color: $color-secondary;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}

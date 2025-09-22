@@ -1,0 +1,134 @@
+
+@use "sass:color";
+$grid-columns: 12;
+$cardWidth: 210px;
+
+/* SCSS HEX */ // colores anteriores
+/*
+$color1: hsl(60, 96%, 85%);
+$color2: #7D95C6ff;
+$color3: #33BDDDFF;
+$color4: #897C94ff;
+$color5: #CD0B30ff;
+$color6: #33657130;
+$color7: #551055;
+
+$color1: #2C3E50; // primario
+$color2: #3498DB; // secundario
+$color3: #27AE60; // exito
+$color4: #F39C12; // advertencia
+$color5: #E74C3C; // error
+$color6: #F4F6F7; // fondo
+$color7: #2C3E50; // texto principal
+*/
+$color-primary: #2C3E50;
+//$hover-primary: darken($color-primary, 10%); // mudado a color.adjust
+$hover-primary: color.adjust($color-primary, $lightness: -10%);
+$color-secondary: #3498DB;
+$color-success: #27AE60;
+$navbar-hover: #27AE60;
+$color-error: #E74C3C;
+$shopCart-color: #E74C3C;
+$active-link: rgb(212, 136, 136);;
+$color-background: #F4F6F7;
+$color-text: #2C3E50;
+$color-text-header: #c2dbe7;
+$light-color: white;
+$color-hover-bg: rgba(255, 255, 255, 0.1);
+$white: #FFFFFFff;
+$black: #3E4345ff;
+
+$color-card-bg: white;      // fondo de la card
+
+$color-muted: #7F8C8D;
+
+$shadow-elevated: 0px 3px 3px 3px rgba(150, 150, 0, 0.5);
+
+$btn-input-border-width: 1px;
+$btn-input-border-style: solid;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+
+); 
+$grid-width: (
+  xs: 360px,
+  sm: 520px,
+  md: 720px,
+  lg: 880px,
+  xl: 1120px,
+  xxl: 1280px
+);
+
+$spacings: (
+    m: margin,
+    mt: margin-top,
+    mb: margin-bottom,
+    ml: margin-left,
+    mr: margin-right,
+    p: padding,
+    pt: padding-top,
+    pb: padding-bottom,
+    pl: padding-left,
+    pr: padding-right,
+);
+
+$aligns: (
+    aic: center,
+    aie: end,
+    aife: flex-end,
+    ais: start,
+    aifs: flex-start,
+);
+
+$alignSelf: (
+    aisc: center,
+    aise: end,
+    aisfe: flex-end,
+    aiss: start,
+    aisfs: flex-start,
+);
+
+$justifys: (
+  jcc: center,
+  jcl: left,
+  jcsa: space-around,
+  jcsb: space-between,
+  jcfe: flex-end,
+  jce: end
+
+);
+
+$justifySelf: (
+  jsc: center,
+  jsl: left,
+  jssa: space-around,
+  jssb: space-between,
+  jsfe: flex-end,
+  jse: end
+
+);
+
+
+
+// justify-self jsFE
+
+$textAligns: (
+  tac: center,
+  tal: left,
+  tar: right
+);
+
+$font-w: (
+  xs: 2rem,
+  sm: 2rem,
+  md: 2.5rem,
+  lg: 2.5rem,
+  xl: 3.5rem,
+  xxl: 4rem
+); 

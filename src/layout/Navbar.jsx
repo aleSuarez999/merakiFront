@@ -1,18 +1,13 @@
-import React, { useState } from 'react'
-import Text from './Text'
+import { useState } from 'react'
+import Text from '../components/Text'
 import { NavLink } from 'react-router'
-import Cart from './Cart'
-import Box from './Box'
+import Box from '../components/Box'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import Button from './Button'
-import DrawerMenu from './DrawerMenu'
-import Aside from './Aside'
-import brandImage from "../assets/logo.png"
+import Button from '../components/Button'
+import brandImage from "../assets/react.svg"
 
 function Navbar() {
-
-  const [openMenuDrawer, setopenMenuDrawer] = useState(false)
 
   return (
         <>
@@ -20,7 +15,7 @@ function Navbar() {
             <img src={brandImage} height="55"  />
             <NavLink to="/" >
                
-                <Text as="h1" > Juguetería Cósmica</Text>
+                <Text as="h1" > Dashboard</Text>
             </NavLink>
             <Box as="nav">
 
@@ -28,10 +23,10 @@ function Navbar() {
                 <NavLink to="/Nosotros" >Nosotros</NavLink>
                 <NavLink to="/Alta" >Alta</NavLink>
                 <NavLink to="/MensajesRecibidos" >Mensajes</NavLink>
-                <NavLink> <Cart /></NavLink>
+                <NavLink> </NavLink>
             </Box>
             <Box  className="navbar__menu-mobile">
-              <NavLink> <Cart /></NavLink>
+              <NavLink> </NavLink>
               <Button 
                className="btn btn__primary btn__solid navbar__menu-button" 
                label={<FontAwesomeIcon icon={faBars} size='xl' />} 

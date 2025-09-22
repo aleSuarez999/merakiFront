@@ -1,0 +1,28 @@
+@use "sass:map";
+@use "../abstracts/variables" as *;
+.product__grid {
+    display: grid;
+    
+    grid-template-columns: repeat($grid-columns, 1fr);
+    column-gap: 1rem;
+    row-gap: 1rem;
+    @media screen and (max-width: map.get($grid-breakpoints, sm) ) {
+        column-gap: 0.5rem;
+    }
+}
+
+@for $i from 1 through $grid-columns {
+    .col-#{$i} {
+        grid-column: span #{$i};
+    }
+}
+
+@each $bp, $w in $grid-breakpoints {
+    @for $i from 1 through $grid-columns {
+        .col-#{$bp}-#{$i} {
+            @media screen and (min-width: $w) {
+                grid-column: span #{$i};
+            }
+        }
+    }
+}

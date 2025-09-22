@@ -9,7 +9,7 @@ function Footer() {
   return (
     <footer className='footer__content' >
         <div className='footer__container'>
-                <Text as="p">Jugueteria Cosmica</Text>
+                <Text as="p">CSOT</Text>
                 <Box className="footer__social">
                     <NavLink ><FontAwesomeIcon className="footer__socialmedia-links" icon={faFacebook} /></NavLink>
                     <NavLink ><FontAwesomeIcon className="footer__socialmedia-links" icon={faInstagram} /></NavLink>

@@ -7,7 +7,7 @@ import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartFlatbedSuitcase, faCartPlus, faShoppingCart } from '@fortawesome/free-solid-svg-icons'
-import CartContext from '../context/CartContext'
+import CartContext from '../context/MkContext'
 import Modal from './Modal'
 import Text from './Text'
 import Counter from './Counter'

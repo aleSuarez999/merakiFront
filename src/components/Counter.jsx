@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Text from './Text'
 import Button from './Button'
-import CartContext from '../context/CartContext'
+import CartContext from '../context/MkContext'
 import Box from './Box'
 
 // contador del carrito modal

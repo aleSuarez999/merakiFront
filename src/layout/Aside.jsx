@@ -18,11 +18,10 @@ function Aside() {
   return (
     <aside>
         <nav>
+          (orgs)&&
           {
             orgs.map(
                     (org) =>  
-
-                 
                         <NavLink key={org.orgId} to={`/category/${org.orgId}`} >{org.name}</NavLink>
                    
                   )

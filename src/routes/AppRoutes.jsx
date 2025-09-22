@@ -1,19 +1,16 @@
 import { BrowserRouter, Route, Routes } from 'react-router'
 import Layout from '../layout/Layout'
-/*
-import Home from '../pages/Home'
-import AboutUs from '../pages/AboutUs'
-import Upload from '../pages/Upload'
-import ContactUs from '../pages/ContactUs'
-import Checkout from '../pages/Checkout'
-*/
+import DashBoard from '../pages/Dashboard'
+import "../styles/main.scss"
+import Organization from '../pages/Organization'
+
 function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route element={<Layout />}>
                     <Route index path="/" element={<DashBoard />} />
-                    <Route path="/detalle" element={<Details />} />
+                    <Route path="/organization/:orgId" element={<Organization />} />
                 </Route>
             </Routes>
         </BrowserRouter>

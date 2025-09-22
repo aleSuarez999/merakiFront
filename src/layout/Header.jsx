@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFacebook, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import Text from '../components/Text'
 import { NavLink } from 'react-router'
-import Navbar from '../components/Navbar'
+import Navbar from './Navbar'
 
 function Header() {
   return (
