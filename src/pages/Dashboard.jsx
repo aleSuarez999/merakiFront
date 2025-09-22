@@ -14,12 +14,7 @@ export default function DashBoard() {
   // setLoading(true)
     
   }, [])
-  
-  if (orgs.length > 0)
-  {
-    //console.log(orgs)  
-    //setLoading(false)
-  }
+
 
   if (loading) {
     //return <div>Cargando productos...</div>
@@ -33,9 +28,9 @@ export default function DashBoard() {
         
         <div className='org__grid'>
         {
-            orgs.map(data => 
-              <Box key={`B${data._id}`} id={`B${data._id}`} className="col-xs-12 col-sm-6 col-lg-4 col-xl-3">
-                <Card  {...data} prod={data} />
+            orgs && orgs.map(data => 
+              <Box key={`B${data.id}`} id={`B${data.id}`} className="col-xs-12 col-sm-6 col-lg-4 col-xl-3">
+                <Card  {...data} org={data} />
               </Box>
             )
         }

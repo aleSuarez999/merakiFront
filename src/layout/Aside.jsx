@@ -1,33 +1,48 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router'
-import { getOrgs } from '../utils/api'
+import Context from '../context/Context'
+import DrawerAside from '../components/DrawerAside'
 // aside conformato por las organizaciones
-function Aside() {
 
-  const [orgs, setOrgs] = useState([])  
-    // lista de orgs
-    useEffect(() => {
-      getOrgs()
-      .then(obj => setOrgs(obj))
-      .catch(err => console.error(err))
-      .finally(
-        )
-      
-    }, [])
+const replaceText = (originalString) => 
+{
+  let newString = originalString.replace("TECO -", "").replace("TECO-", "")
+  return newString
+}
+
+function Aside() {
+  //drawer para poder contraer el aside
+  const [openAsideDrawer, setopenAsideDrawer] = useState(false)
+  const orgs = useContext(Context)
+  useEffect(() => {
+    console.info(orgs)
+    
+  }, [])
+  
 
   return (
-    <aside>
-        <nav>
-          (orgs)&&
-          {
-            orgs.map(
-                    (org) =>  
-                        <NavLink key={org.orgId} to={`/category/${org.orgId}`} >{org.name}</NavLink>
-                   
-                  )
-          }
-        </nav>
-    </aside>
+    <>
+    
+    <button onClick={() => setopenAsideDrawer(!openAsideDrawer)}>
+        {openAsideDrawer ? "Cerrar menú" : "Abrir menú"}
+    </button>
+
+    <DrawerAside show={openAsideDrawer} closeAside={() => setopenAsideDrawer(false)}>
+      <aside>
+          <nav>
+            {
+              orgs && orgs.map((org) => ( 
+                    <NavLink key={org.id} to={`/category/${org.id}`} >
+                      {replaceText(org.name)}
+                    </NavLink>
+                )
+              )
+            }
+          </nav>
+      </aside>
+    </DrawerAside>
+    </>
+
   )
 }
 

@@ -1,6 +1,6 @@
 @use "sass:map";
 @use "../abstracts/variables" as *;
-.product__grid {
+.org__grid {
     display: grid;
     
     grid-template-columns: repeat($grid-columns, 1fr);

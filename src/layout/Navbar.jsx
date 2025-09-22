@@ -10,9 +10,9 @@ import brandImage from "../assets/react.svg"
 function Navbar() {
 
   return (
-        <>
-          <div>
-            <img src={brandImage} height="55"  />
+       <Box className="navbar__container" >
+        
+             <img src={brandImage} height="55"  />
             <NavLink to="/" >
                
                 <Text as="h1" > Dashboard</Text>
@@ -34,8 +34,8 @@ function Navbar() {
                />
                 
             </Box>
-        </div>
-    </>
+        </Box>
+    
   )
 }
 

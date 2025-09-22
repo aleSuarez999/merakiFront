@@ -9,15 +9,13 @@ function Provider({children}) {
 
     useEffect(() => {
        getOrgs()
-       .then(data => console.log(data))
        .then(data => setOrgs(data))
+       .then(() => console.log(orgs))
        .catch(error => { console.log(error.message)} )  
     }, [])
     
      return (
-        <Context.Provider value={
-          orgs
-          }>
+        <Context.Provider value={orgs}>
             {children}
         </Context.Provider>
   )
