@@ -24,7 +24,7 @@ function Aside() {
     <>
     
     <button onClick={() => setopenAsideDrawer(!openAsideDrawer)}>
-        {openAsideDrawer ? "Cerrar menú" : "Abrir menú"}
+        {openAsideDrawer ? "Cerrar" : "Orgs"}
     </button>
 
     <DrawerAside show={openAsideDrawer} closeAside={() => setopenAsideDrawer(false)}>

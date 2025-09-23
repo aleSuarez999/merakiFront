@@ -13,3 +13,16 @@ export const getOrgs = async () => {
         return resp.data.orgs
     }
 }
+
+export const orgStatuses = async(orgId) => {
+    // console.log("satatuses", orgId)
+    const resp = await axiosInstance.get(`/organizations/${orgId}/devices/statuses/overview`)
+    //console.log("satatuses", resp.data)
+    if (resp.data.ok)
+    {
+        console.log("ok", resp.data.ok)
+        //{ok=true, orgs=[]}
+        return resp.data.statuses
+    }
+}
+

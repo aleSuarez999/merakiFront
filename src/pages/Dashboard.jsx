@@ -13,6 +13,7 @@ export default function DashBoard() {
   useEffect(() => {
   // setLoading(true)
     
+    
   }, [])
 
 
@@ -24,8 +25,7 @@ export default function DashBoard() {
   return (
     
       <>    
-        <Text as="h2" >Organizaciones</Text>
-        
+     
         <div className='org__grid'>
         {
             orgs && orgs.map(data => 

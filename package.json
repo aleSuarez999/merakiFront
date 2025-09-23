@@ -16,6 +16,7 @@
     "@fortawesome/react-fontawesome": "^3.0.2",
     "axios": "^1.12.2",
     "dotenv": "^17.2.2",
+    "nodemon": "^3.1.10",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router": "^7.9.1",
