@@ -15,25 +15,17 @@ function Navbar() {
              <img src={brandImage} height="55"  />
             <NavLink to="/" >
                
-                <Text as="h1" > Dashboard</Text>
+                <Text as="h2" >Meraki Dashboard</Text>
             </NavLink>
             <Box as="nav">
 
-                <NavLink to="/Contacto" >Contacto</NavLink>
-                <NavLink to="/Nosotros" >Nosotros</NavLink>
-                <NavLink to="/Alta" >Alta</NavLink>
-                <NavLink to="/MensajesRecibidos" >Mensajes</NavLink>
+                <NavLink to="/Item" ></NavLink>
+                <NavLink to="/Item" ></NavLink>
+                <NavLink to="/Contacto" ></NavLink>
+
                 <NavLink> </NavLink>
             </Box>
-            <Box  className="navbar__menu-mobile">
-              <NavLink> </NavLink>
-              <Button 
-               className="btn btn__primary btn__solid navbar__menu-button" 
-               label={<FontAwesomeIcon icon={faBars} size='xl' />} 
-               onClick={() => setopenMenuDrawer(true)}
-               />
-                
-            </Box>
+            
         </Box>
     
   )

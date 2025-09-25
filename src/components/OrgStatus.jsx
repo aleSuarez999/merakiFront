@@ -17,8 +17,9 @@ function OrgStatus( { org })
    // console.log("sta", org.id)
     orgStatuses(org.id)
     .then((data) => {
-        console.log("pepe", data.counts.byStatus)
-        setorgStatus(data.counts.byStatus)
+        // mando error en true cuando la api no tiene perfil para ver el cliente
+        if (!data.error)
+          setorgStatus(data.counts.byStatus)
       
     } )
     
@@ -28,21 +29,19 @@ function OrgStatus( { org })
   
   return (
       <>
-          <Box className="status__body">
-          
-
+        
           {orgStatus && Object.keys(orgStatus).length > 0 ? (
-              Object.entries(orgStatus).map(([key, value], index) => (
-                <div key={index}>
-                  <strong>{key}</strong>: {value}
-                </div>
-              ))
-            ) : (
-              <p>No hay datos de estado disponibles.</p>
-            )}
+            <>
+              <ul className='orgStatus'>
+                  <li>Online: {orgStatus.online}</li>
+                  <li>Alert: {orgStatus.alerting}</li>
+                  <li>Dormant: {orgStatus.dormant}</li>
+                  <li className='red-alert'>Offline: {orgStatus.offline}</li>
+              </ul>
+            </>
+          ) : <>Verificar Permisos</>
+        }
 
-
-          </Box>
     </>
   )
 }

@@ -5,13 +5,27 @@ import Context from '../context/Context';
 
 import Box from './Box';
 import OrgStatus from './OrgStatus';
-import OrgStatusChart from './OrgStatusChart';
+
 
 function Card({
     org,
     ...props
 
 }) {
+
+/*
+{
+    "counts": {
+        "byStatus": {
+            "online": 0,
+            "alerting": 0,
+            "offline": 0,
+            "dormant": 0
+        }
+    }
+}
+*/
+
 
   const navigate = useNavigate();
  // console.log(org)
@@ -24,9 +38,9 @@ function Card({
               </NavLink>
               <Text as="p" className="card__title">{org.name}</Text>
               
-              <Box className="d-flex counter__container jcc">
+              <Box className="d-flex card__status">
+                <OrgStatus org={org} />
                 
-                <OrgStatusChart org={org} />
               </Box>
           </Box>
     </>
