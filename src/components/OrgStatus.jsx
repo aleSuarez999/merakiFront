@@ -4,11 +4,13 @@ import { NavLink, useNavigate } from 'react-router'
 
 import Box from './Box';
 import { orgStatuses } from '../utils/api';
+import OrgStatusChart from './OrgStatusChart';
 
 function OrgStatus( { org }) 
 {
   const navigate = useNavigate();
   const [orgStatus, setorgStatus] = useState([])
+  const [charData, setCharData] = useState([])
  // console.log("sta", org)
  /* contenido org
  sta {id: '935608', name: '-MERAKI TECO - Organización Maestra - NO USAR NI EDITAR', url: 'https://n515.dashboard.meraki.com/o/Z-K5jc/manage/organization/overview', samlConsumerUrls: null, samlConsumerUrl: null, …}
@@ -19,14 +21,25 @@ function OrgStatus( { org })
     .then((data) => {
         // mando error en true cuando la api no tiene perfil para ver el cliente
         if (!data.error)
+        {
           setorgStatus(data.counts.byStatus)
-      
+        } 
+          
+      const dataItems = Object.entries(data.counts.byStatus).map(([name, value]) => ({
+  name,
+  value
+}));
+
+    setCharData(dataItems)
+    console.log("dataitems", dataItems)
+
     } )
     
     .catch((error) => console.error(error.message))
 
   }, [org])
   
+
   return (
       <>
         
@@ -38,6 +51,9 @@ function OrgStatus( { org })
                   <li>Dormant: {orgStatus.dormant}</li>
                   <li className='red-alert'>Offline: {orgStatus.offline}</li>
               </ul>
+              <Box>
+                <OrgStatusChart data={charData} />
+              </Box>
             </>
           ) : <>Verificar Permisos</>
         }

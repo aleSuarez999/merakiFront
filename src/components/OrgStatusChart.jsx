@@ -1,6 +1,6 @@
-import { Pie, PieChart } from "recharts"
+import { Cell, Pie, PieChart, Tooltip } from "recharts"
 
-const data = [
+const data2 = [
   
       {name: "online", value: 15},
       {name: "alerting", value: 20},
@@ -10,14 +10,25 @@ const data = [
 ]
 
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#F44236"]
+const COLORS = ["#25b963ff", "#FFBB28", "#F44236", "#CCC" ]
 
-const OrgStatusChart = () => {
+const OrgStatusChart = (
+  {data}
+) => {
   
   return (
-      <PieChart width={150} height={150} >
-        <Pie data={data} dataKey='value' />
+      <PieChart width={120} height={120} >
+        <Pie data={data} dataKey='value'  > 
+          {
+            data.map( (entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index]} />
+            )
 
+            )
+          }
+
+        </Pie>
+        <Tooltip />
       </PieChart>
 
   )

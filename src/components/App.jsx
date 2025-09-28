@@ -1,17 +1,8 @@
 
-import Provider from '../context/Provider'
-import AppRoutes from '../routes/AppRoutes'
-import Text from './Text'
-
-
+import AppRoutes from '../routes/AppRoutes';
 
 function App() {
-
-  return (
-    <Provider>
-      <AppRoutes />
-    </Provider>
-  )
+  return <AppRoutes />;
 }
 
-export default App
+export default App;
