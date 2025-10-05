@@ -9,7 +9,9 @@ import OrgStatus from './OrgStatus';
 
 function Card({
     org,
+    onClick,
     ...props
+    
 
 }) {
 
@@ -32,10 +34,8 @@ function Card({
   return (
       <>
          
-          <Box className="card__body">
-              <NavLink to={`/organizations/${org.id}`} >
+          <Box className="card__body" onClick={onClick}>
 
-              </NavLink>
               <Text as="p" className="card__title">{org.name}</Text>
               
               <Box className="d-flex card__status">

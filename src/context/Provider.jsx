@@ -10,7 +10,7 @@ function Provider({children}) {
     useEffect(() => {
        getOrgs()
        .then(data => setOrgs(data))
-       .then(() => console.log(orgs))
+       //.then(() => console.log(orgs))
        .catch(error => { console.log(error.message)} )  
     }, [])
     

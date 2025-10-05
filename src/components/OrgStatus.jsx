@@ -3,7 +3,7 @@ import Text from './Text'
 import { NavLink, useNavigate } from 'react-router'
 
 import Box from './Box';
-import { orgStatuses } from '../utils/api';
+import { getOrganizationDevicesStatusesOverview } from '../utils/api';
 import OrgStatusChart from './OrgStatusChart';
 
 function OrgStatus( { org }) 
@@ -17,7 +17,7 @@ function OrgStatus( { org })
  */
   useEffect(() => {
    // console.log("sta", org.id)
-    orgStatuses(org.id)
+    getOrganizationDevicesStatusesOverview(org.id)
     .then((data) => {
         // mando error en true cuando la api no tiene perfil para ver el cliente
         if (!data.error)
@@ -31,7 +31,7 @@ function OrgStatus( { org })
 }));
 
     setCharData(dataItems)
-    console.log("dataitems", dataItems)
+    //console.log("dataitems", dataItems)
 
     } )
     
@@ -44,15 +44,20 @@ function OrgStatus( { org })
       <>
         
           {orgStatus && Object.keys(orgStatus).length > 0 ? (
+            
+            
+            
             <>
-              <ul className='orgStatus'>
-                  <li>Online: {orgStatus.online}</li>
-                  <li>Alert: {orgStatus.alerting}</li>
-                  <li>Dormant: {orgStatus.dormant}</li>
-                  <li className='red-alert'>Offline: {orgStatus.offline}</li>
-              </ul>
               <Box>
-                <OrgStatusChart data={charData} />
+                 <OrgStatusChart data={charData} />
+              </Box>
+              <Box className="w-100">
+                <ul className='orgStatus d-flex '>
+                    <li  className='jcsb d-flex'><span>Online:</span> <span> {orgStatus.online} </span></li>
+                    <li  className='jcsb d-flex'><span>Alert:</span> <span>  {orgStatus.alerting}</span></li>
+                    <li className='jcsb d-flex'><span>Dorm:</span><span>  {orgStatus.dormant} </span></li>
+                    <li  className='jcsb d-flex red-alert'><span>Offline:</span><span>  {orgStatus.offline} </span></li>
+                </ul>
               </Box>
             </>
           ) : <>Verificar Permisos</>

@@ -10,7 +10,7 @@ function Layout() {
   return (
     <>
       <Header />        
-        <Aside />
+        
           <Container>
           { <Outlet /> }
           </Container>

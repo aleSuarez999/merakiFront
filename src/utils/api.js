@@ -39,16 +39,15 @@ export const getOrgs = async () => {
     }
 }
 
-export const orgStatuses = async(orgId) => {
-    // console.log("satatuses", orgId)
+export const getOrganizationDevicesStatusesOverview = async(orgId) => {
+
     try {
-        
+
         const resp = await axiosInstance.get(`/organizations/${orgId}/devices/statuses/overview`)
-       // console.log("satatuses", resp.data.statuses)
+
+        //console.log("uplinkStatuses", resp.data)
         if (resp.data.ok)
         {
-           // console.log("ok", resp.data.ok)
-            //{ok=true, orgs=[]}
             return resp.data.statuses
         }
         else{
@@ -79,6 +78,49 @@ export const orgStatuses = async(orgId) => {
                             "online":0
                         }
                     }
+                }
+        return res
+    }
+}
+
+export const getOrganizationApplianceUplinkStatuses = async(orgId) => {
+     //console.log("appliance consult:", orgId)
+    try {
+        
+        const resp = await axiosInstance.get(`/organizations/${orgId}/appliance/uplink/statuses`)
+
+        //console.log("uplinkStatuses", resp.data)
+        if (resp.data.ok)
+        {
+            //console.log("ok", resp.data.ok)
+            const res = {
+                    ok: true,
+                    networks: resp.data.redes
+            }
+            return res
+
+        }
+        else{
+           //console.log("NOOK", resp.data.ok)
+            
+            const res = {
+                    ok: false,
+                    counts: {
+                        byStatus:{
+                            "alerting":0,
+                            "dormant":0,
+                            "offline":0,
+                            "online":0
+                        }
+                    }
+                }
+        return res    
+        }
+    } catch (error) {
+       // console.log(`No hay permiso en orgId ${orgId}`)
+            const res = {
+                    ok: false,
+                    counts: 0
                 }
         return res
     }

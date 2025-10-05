@@ -1,17 +1,25 @@
 @use "../abstracts/variables" as *;
 
 .footer__content{
+    height: 1.5rem;
     background-color: $color-primary;
     position: fixed;
     bottom:0;
     width: 100%;
     left:0;
     z-index: 100;
+    align-items:flex-start;
 .footer__container{
     color: $color-text-header;
-    padding: 0 2rem;
+    padding: 0 1rem;
+    align-items:flex-start;    
     display: flex;
     justify-content: space-between;
+    p{
+        padding: 0;
+        margin: 0;
+        align-items:flex-start;
+    }
     a {
         color: $color-text-header;
         &:hover {
@@ -20,7 +28,7 @@
     }
     .footer__social{
          display: flex;
-        align-items: center;
+        align-items:flex-start;
         justify-content: space-between;
         margin: 0 2rem;
         width: 10rem;

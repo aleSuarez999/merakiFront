@@ -5,12 +5,16 @@
 @use "../abstracts/mixins" as *;
 
 #root{
-  margin: 3rem 0;
-  padding: 0rem;
+ // margin: 3rem 0;
+  padding: 1rem;
+  position: relative;
   display: flex;
-  justify-content:flex-start;
-  align-items: start;
+  //justify-content:flex-start;
+  justify-content: center;
+  align-items: center;
+  top: 2rem;
   width: 100vw;
+  //height: 100vw;
   z-index: 1;
    @media screen and (min-width: map.get($grid-width, xs) ) {
          justify-content:center;
@@ -58,4 +62,17 @@ h1 {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.accordion-content {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-left: 3px solid #007bff;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scaleY(0); }
+  to { opacity: 1; transform: scaleY(1); }
 }
