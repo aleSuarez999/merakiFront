@@ -22,7 +22,18 @@ export default function DashBoard() {
   };
 /////////////////////////////////
 
-return (
+  useEffect(() => {
+  // setLoading(true)
+    
+  }, [])
+
+
+  if (loading) {
+    //return <div>Cargando productos...</div>
+  }
+  
+  return (
+    
       <>    
      
       <div className='org__grid' >

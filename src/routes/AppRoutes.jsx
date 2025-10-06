@@ -5,7 +5,7 @@ import Login from '../components/Login';
 import PrivateRoute from './PrivateRoutes';
 import "../styles/main.scss";
 import Provider from '../context/Provider';
-import ApplianceStatus from '../pages/ApplianceStatus';
+import ApplianceStatus from '../components/ApplianceStatus';
 
 //detecto si estoy en produccion o desarrollo
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';

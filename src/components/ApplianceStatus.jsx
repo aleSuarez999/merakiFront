@@ -1,9 +1,9 @@
 
-import Text from '../components/Text'
-import Card from '../components/Card'
+import Text from './Text'
+import Card from './Card'
 import { useContext, useEffect, useState } from 'react'
 
-import Box from '../components/Box'
+import Box from './Box'
 import Context from '../context/Context'
 import { getOrganizationApplianceUplinkStatuses } from '../utils/api'
 import { useParams } from 'react-router'
@@ -21,7 +21,7 @@ export default function ApplianceStatus({orgId}) {
       .then((data) => {
         setLoading(false);
         setRedes(data?.networks || []);
-        //console.log('Uplink data:', data);
+        console.log('Uplink data:', data);
       })
       .catch((error) => {
         console.error('Error al obtener uplinks:', error);
