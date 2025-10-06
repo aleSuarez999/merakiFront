@@ -7,12 +7,18 @@ import "../styles/main.scss";
 import Provider from '../context/Provider';
 import ApplianceStatus from '../pages/ApplianceStatus';
 
+//detecto si estoy en produccion o desarrollo
+const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
+const basename = isProduction ? '/help2/merakiApp' : '/';
+const pathLogin = isProduction ? 'login' : '/login';
+
+
 function AppRoutes() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename} >
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/login" element={<Login />} />
+          <Route path={pathLogin} element={<Login />} />
           <Route 
             path="/organizations/:orgId" 
             element={

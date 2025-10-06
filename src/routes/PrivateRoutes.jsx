@@ -1,5 +1,7 @@
 import { Navigate } from "react-router-dom";
 
+const PRODUCTION = import.meta.env.VITE_PRODUCTION
+
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('jwt_token');
 
@@ -9,7 +11,7 @@ const PrivateRoute = ({ children }) => {
       localStorage.setItem('logout_reason', 'expirado');
       sessionStorage.setItem('already_redirected', 'true');
     }
-    return <Navigate to="/login" />;
+    return <Navigate to={`(${PRODUCTION}) ? "/login" : "login"`} />;
   }
 
   sessionStorage.removeItem('already_redirected');
