@@ -4,10 +4,10 @@ import { NavLink, useNavigate } from 'react-router'
 
 import Box from './Box';
 
-import DeviceStatus from './DeviceStatus';
+import UplinkStatus from './UplinkStatus';
 
 
-function Card({
+function CardUplink({
     org,
     onClick,
     ...props
@@ -26,7 +26,7 @@ function Card({
               <Text as="p" className="card__title">{org.name}</Text>
               
               <Box className="d-flex card__status">
-                <DeviceStatus org={org} />
+                <UplinkStatus org={org} />1
                 
               </Box>
           </Box>
@@ -34,4 +34,4 @@ function Card({
   )
 }
 
-export default Card
+export default CardUplink

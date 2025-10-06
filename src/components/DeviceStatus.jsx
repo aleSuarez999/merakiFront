@@ -6,7 +6,7 @@ import Box from './Box';
 import { getOrganizationDevicesStatusesOverview } from '../utils/api';
 import OrgStatusChart from './OrgStatusChart';
 
-function OrgStatus( { org }) 
+function DeviceStatus( { org }) 
 {
   const navigate = useNavigate();
   const [orgStatus, setorgStatus] = useState([])
@@ -67,4 +67,4 @@ function OrgStatus( { org })
   )
 }
 
-export default OrgStatus
+export default DeviceStatus

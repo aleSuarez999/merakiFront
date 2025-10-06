@@ -1,11 +1,10 @@
 
 import Text from '../components/Text'
 import Card from '../components/Card'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 
 import Box from '../components/Box'
 import Context from '../context/Context'
-import ApplianceStatus from '../components/ApplianceStatus'
 
 export default function DashBoard() {
   const [loading, setLoading] = useState(true)
@@ -30,11 +29,7 @@ return (
           <Box key={`B${data.id}`} id={`B${data.id}`} className="col-xs-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 ">
             <Card {...data} org={data} onClick={() => toggleAccordion(data.id, 1)} />
             
-            {expandedOrgId === data.id && (
-              <div className="accordion-content" onClick={() => toggleAccordion(0)}>
-                <ApplianceStatus orgId={data.id} />
-              </div>
-            )}
+       
           </Box>
         ))}
       </div>

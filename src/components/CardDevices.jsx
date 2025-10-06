@@ -7,7 +7,7 @@ import Box from './Box';
 import DeviceStatus from './DeviceStatus';
 
 
-function Card({
+function CardDevices({
     org,
     onClick,
     ...props
@@ -34,4 +34,4 @@ function Card({
   )
 }
 
-export default Card
+export default CardDevices

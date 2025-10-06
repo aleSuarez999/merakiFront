@@ -1,11 +1,13 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import Layout from '../layout/Layout';
 import DashBoard from '../pages/Dashboard';
+
 import Login from '../components/Login';
 import PrivateRoute from './PrivateRoutes';
 import "../styles/main.scss";
 import Provider from '../context/Provider';
-import ApplianceStatus from '../components/ApplianceStatus';
+import Devices from '../pages/Devices';
+import Uplinks from '../pages/Uplinks';
 
 //detecto si estoy en produccion o desarrollo
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
@@ -19,16 +21,7 @@ function AppRoutes() {
       <Routes>
         <Route element={<Layout />}>
           <Route path={pathLogin} element={<Login />} />
-          <Route 
-            path="/organizations/:orgId" 
-            element={
-              <Provider>
-                <PrivateRoute>
-                  <ApplianceStatus />
-                </PrivateRoute>
-              </Provider>
-            }
-          />
+        
           
           <Route
             path="/"
@@ -36,6 +29,28 @@ function AppRoutes() {
               <Provider>
                 <PrivateRoute>
                   <DashBoard />
+                </PrivateRoute>
+              </Provider>
+            }
+          />
+
+            <Route
+            path="/Devices"
+            element={
+              <Provider>
+                <PrivateRoute>
+                  <Devices />
+                </PrivateRoute>
+              </Provider>
+            }
+          />
+
+              <Route
+            path="/Uplinks"
+            element={
+              <Provider>
+                <PrivateRoute>
+                  <Uplinks />
                 </PrivateRoute>
               </Provider>
             }

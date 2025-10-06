@@ -27,8 +27,8 @@ function Navbar() {
             </NavLink>
             <Box as="nav">
 
-                <NavLink to="/Item" ></NavLink>
-                <NavLink to="/Item" ></NavLink>
+                <NavLink to="/Devices" >Devices</NavLink>
+                <NavLink to="/Uplinks" >Uplinks</NavLink>
                 <NavLink to="/Contacto" ></NavLink>
 
                 <NavLink> </NavLink>
