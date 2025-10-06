@@ -52,6 +52,7 @@ function Login() {
         <input
           type="password"
           placeholder="Clave"
+          autoComplete='false'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
