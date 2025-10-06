@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
+const loginURL = isProduction ? 'api/login' : 'http://localhost:4000/api/login';
+
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +22,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:4000/api/login', {
+      const res = await axios.post(`${loginURL}`, {
         username,
         password
       });
