@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
 
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
 const loginURL = isProduction ? 'api/login' : 'http://localhost:4000/api/login';
@@ -11,13 +12,21 @@ function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const reason = localStorage.getItem('logout_reason');
-    if (reason === 'expirado') {
-      setError('Sesión expirada. Por favor, inicia sesión nuevamente.');
-      localStorage.removeItem('logout_reason');
-    }
-  }, []);
+
+const alreadyHandled = useRef(false);
+
+useEffect(() => {
+  if (alreadyHandled.current) return;
+
+  alreadyHandled.current = true;
+
+  const reason = localStorage.getItem('logout_reason');
+  if (reason === 'expirado') {
+    setError('Sesión expirada. Por favor, inicia sesión nuevamente.');
+    localStorage.removeItem('logout_reason');
+  }
+
+}, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,7 +39,8 @@ function Login() {
       if (res.data.token) {
         localStorage.setItem('jwt_token', res.data.token);
         sessionStorage.removeItem('already_redirected');
-        navigate('/');
+        //navigate('/');
+        navigate('/', { replace: true });
       } else {
         setError('Error inesperado. Intenta nuevamente.');
       }

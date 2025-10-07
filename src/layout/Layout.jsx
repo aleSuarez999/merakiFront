@@ -2,7 +2,7 @@ import React from 'react'
 
 import Footer from './Footer'
 import { Outlet } from 'react-router'
-import Aside from './Aside'
+
 import Container from '../components/Container'
 import Header from './Header'
 
