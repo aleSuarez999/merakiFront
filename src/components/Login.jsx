@@ -56,14 +56,14 @@ useEffect(() => {
         <input
           type="text"
           placeholder="Usuario"
-          autocomplete="username"
+          autoComplete="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
           type="password"
           placeholder="Clave"
-          autocomplete="current-password"
+          autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

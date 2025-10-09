@@ -4,13 +4,19 @@ import { NavLink, useNavigate } from 'react-router'
 
 import Box from './Box';
 import { getOrganizationApplianceUplinkStatuses } from '../utils/api';
-import OrgStatusChart from './OrgStatusChart';
+import UplinkStatusChart from './UplinkStatusChart';
+
 
 function UplinkStatus( { org }) 
 {
   const navigate = useNavigate();
-  const [orgStatus, setorgStatus] = useState([])
+  const [uplinkStatus, setUplinkStatus] = useState([])
   const [charData, setCharData] = useState([])
+  
+  const [uplinkCount, setUplinkCount] = useState(0)
+  const [activeUplinkCount, setactiveUplinkCount] = useState(0)
+  
+
  // console.log("sta", org)
  /* contenido org
  sta {id: '935608', name: '-MERAKI TECO - Organización Maestra - NO USAR NI EDITAR', url: 'https://n515.dashboard.meraki.com/o/Z-K5jc/manage/organization/overview', samlConsumerUrls: null, samlConsumerUrl: null, …}
@@ -23,14 +29,32 @@ function UplinkStatus( { org })
         if (!data.error)
         {
           console.log("redesrecibidas", data)
-          setorgStatus(data)
+          setUplinkStatus(data)
         } 
           
-      const dataItems = Object.entries(data.counts.byStatus).map(([name, value]) => ({
-  name,
-  value
-}));
+     
 
+    //data.networks.map((obj) => {
+      // por cada red 
+     // console.log("estado", obj.uplinkCount, obj.activeUplinkCount)
+      
+    //})
+
+    const uplinkCount = data.networks.reduce( 
+    (acc, obj) => acc + obj.uplinkCount , 0
+  )
+    setUplinkCount(uplinkCount)
+    const activeUplinkCount = data.networks.reduce( 
+    (acc, obj) => acc + obj.activeUplinkCount , 0
+  )
+    setactiveUplinkCount(activeUplinkCount)
+
+    const dataItems = [
+      { "name": "uplinkCount",
+        "value": uplinkCount},
+      { "name": "activeUplinkCount",
+        "value": uplinkCount - activeUplinkCount}
+    ]
     setCharData(dataItems)
     console.log("dataitems", dataItems)
 
@@ -44,20 +68,18 @@ function UplinkStatus( { org })
   return (
       <>
         
-          {orgStatus && Object.keys(orgStatus).length > 0 ? (
-            
-            
+          {uplinkStatus && Object.keys(uplinkStatus).length > 0 ? (
             
             <>
               <Box>
-                 <OrgStatusChart data={charData} />
+                 <UplinkStatusChart  data={charData} />
               </Box>
               <Box className="w-100">
                 <ul className='orgStatus d-flex '>
-                    <li  className='jcsb d-flex'><span>Online:</span> <span> {orgStatus.online} </span></li>
-                    <li  className='jcsb d-flex'><span>Alert:</span> <span>  {orgStatus.alerting}</span></li>
-                    <li className='jcsb d-flex'><span>Dorm:</span><span>  {orgStatus.dormant} </span></li>
-                    <li  className='jcsb d-flex red-alert'><span>Offline:</span><span>  {orgStatus.offline} </span></li>
+                    <li  className='jcsb d-flex'><span>Uplinks:</span> <span> {uplinkCount} </span></li>
+                    <li  className='jcsb d-flex'><span>Failed:</span> <span>  {uplinkCount - activeUplinkCount}</span></li>
+            
+                    
                 </ul>
               </Box>
             </>

@@ -95,13 +95,13 @@ export const getOrganizationApplianceUplinkStatuses = async(orgId) => {
         
         const resp = await axiosInstance.get(`/organizations/${orgId}/appliance/uplink/statuses`)
 
-        console.log("uplinkStatuses", resp.data.redes)
+        console.log("uplinkStatuses", resp.data.networks)
         if (resp.data.ok)
         {
             //console.log("ok", resp.data.ok)
             const res = {
                     ok: true,
-                    networks: resp.data.redes
+                    networks: resp.data.networks
             }
             return res
 

@@ -26,7 +26,7 @@ function CardUplink({
               <Text as="p" className="card__title">{org.name}</Text>
               
               <Box className="d-flex card__status">
-                <UplinkStatus org={org} />1
+                <UplinkStatus org={org} />
                 
               </Box>
           </Box>
