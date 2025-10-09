@@ -60,7 +60,7 @@ function UplinkStatus( { org })
 
     } )
     
-    .catch((error) => console.error(error.message))
+    .catch((error) => console.error(error.message, 1))
 
   }, [org])
   
