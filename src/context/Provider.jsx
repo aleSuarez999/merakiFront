@@ -35,7 +35,7 @@ function Provider({children}) {
                 allNetworks.push({orgId: org.id, orgName: org.name, redes})
             )
                 //console.info("red ", org.id, org.name, redes)
-                .catch((error) => console.error(error.message) )
+                .catch((error) => console.error(error.message) )npm 
             })
                 */
    //    }
