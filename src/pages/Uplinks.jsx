@@ -9,22 +9,22 @@ import CardUplink from '../components/CardUplink'
 export default function Uplinks() {
   const [loading, setLoading] = useState(true)
  
+  //const {orgs, networks} = useContext(Context)
   const orgs = useContext(Context)
 // acordeon con uplinks caidos //
-  const [expandedOrgId, setExpandedOrgId] = useState(null);
+ 
+const context = useContext(Context);
+console.log(context)
 
-  const toggleAccordion = (id) => {
-    if (id === 0)
-      setExpandedOrgId(null);
-    else  
-      setExpandedOrgId(prev => (prev === id ? null : id));
-  };
+
+ 
 /////////////////////////////////
 
   useEffect(() => {
   // setLoading(true)
-    
-  }, [])
+    console.log("entro a uplinks")
+    console.log(orgs)
+  }, [orgs])
 
 
   if (loading) {
@@ -38,7 +38,7 @@ export default function Uplinks() {
       <div className='org__grid' >
         {orgs && orgs.map(data => (
           <Box key={`B${data.id}`} id={`B${data.id}`} className="col-xs-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 ">
-            <CardUplink {...data} org={data} onClick={() => toggleAccordion(data.id, 1)} />
+            <CardUplink {...data} org={data}  />
             
           </Box>
         ))}

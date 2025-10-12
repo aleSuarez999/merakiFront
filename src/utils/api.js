@@ -45,6 +45,22 @@ export const getOrgs = async () => {
     }
 }
 
+export const getNetworksByOrg = async (orgId) => {
+    try{
+
+        const resp = await axiosInstance.get(`/organizations/${orgId}/networks`)
+        if (resp.data.ok)
+        {
+            return resp.data.networks
+        }
+    }
+    catch(error) {
+        console.error(error.message)
+        return []
+    }
+
+}
+
 export const getOrganizationDevicesStatusesOverview = async(orgId) => {
 
     try {

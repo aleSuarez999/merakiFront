@@ -22,7 +22,7 @@ function UplinkStatus( { org })
  sta {id: '935608', name: '-MERAKI TECO - Organización Maestra - NO USAR NI EDITAR', url: 'https://n515.dashboard.meraki.com/o/Z-K5jc/manage/organization/overview', samlConsumerUrls: null, samlConsumerUrl: null, …}
  */
   useEffect(() => {
-   // console.log("sta", org.id)
+    console.log("sta", org.id)
     getOrganizationApplianceUplinkStatuses(org.id)
     .then((data) => {
         // mando error en true cuando la api no tiene perfil para ver el cliente
@@ -83,7 +83,7 @@ function UplinkStatus( { org })
                 </ul>
               </Box>
             </>
-          ) : <>Verificar Permisos</>
+          ) : <>No hay datos</>
         }
 
     </>

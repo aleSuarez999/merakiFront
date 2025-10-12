@@ -9,17 +9,12 @@ import Context from '../context/Context'
 export default function DashBoard() {
   const [loading, setLoading] = useState(true)
  
+  //const {orgs, networks} = useContext(Context)
   const orgs = useContext(Context)
-// acordeon con uplinks caidos //
-  const [expandedOrgId, setExpandedOrgId] = useState(null);
+  //const context = useContext(Context);
 
-  const toggleAccordion = (id) => {
-    if (id === 0)
-      setExpandedOrgId(null);
-    else  
-      setExpandedOrgId(prev => (prev === id ? null : id));
-  };
-/////////////////////////////////
+// acordeon con uplinks caidos //
+ 
 
 return (
       <>    

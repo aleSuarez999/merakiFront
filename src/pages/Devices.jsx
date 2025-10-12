@@ -11,16 +11,12 @@ import CardDevices from '../components/CardDevices'
 export default function Devices() {
   const [loading, setLoading] = useState(true)
  
+  //const {orgs, networks} = useContext(Context)
   const orgs = useContext(Context)
 // acordeon con uplinks caidos //
-  const [expandedOrgId, setExpandedOrgId] = useState(null);
 
-  const toggleAccordion = (id) => {
-    if (id === 0)
-      setExpandedOrgId(null);
-    else  
-      setExpandedOrgId(prev => (prev === id ? null : id));
-  };
+
+
 /////////////////////////////////
 
   useEffect(() => {
