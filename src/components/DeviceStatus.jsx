@@ -55,7 +55,9 @@ function DeviceStatus( { org })
                     <li  className='jcsb d-flex'><span>Online:</span> <span> {deviceStatus.online} </span></li>
                   { /* <li  className='jcsb d-flex'><span>Alert:</span> <span>  {deviceStatus.alerting}</span></li>
                     <li className='jcsb d-flex'><span>Dorm:</span><span>  {deviceStatus.dormant} </span></li> */}
-                    <li  className='jcsb d-flex red-alert'><span>Offline:</span><span>  {deviceStatus.offline} </span></li>
+                   { deviceStatus.offline > 0 && (
+                    <li  className={`jcsb d-flex ${deviceStatus.offline > 0 ? 'red-alert' : ''}`}><span>Offline:</span><span>  {deviceStatus.offline} </span></li>
+                   )}
                 </ul>
               </Box>
             </>
