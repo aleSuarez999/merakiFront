@@ -12,7 +12,7 @@ const data2 = [
 
 //const COLORS = ["#427947ff", "#e0de55ff", "#b9473fff", "#CCC" ]
 //const COLORS = ["#427947ff", "#e0de55ff", "rgb(255, 102, 0)", "#CCC" ]
-const COLORS = ["#427947ff", "#b9473fff" ]
+const COLORS = ["#24c024ff", "#FF0000" ]
 
 const DeviceStatusChart = (
   {data}

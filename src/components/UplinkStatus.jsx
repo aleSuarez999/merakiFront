@@ -36,8 +36,8 @@ function UplinkStatus({ org }) {
     setActiveUplinkCount(activeUplinkCount);
 
     const dataItems = [
-      { name: 'uplinkCount', value: uplinkCount },
-      { name: 'activeUplinkCount', value: uplinkCount - activeUplinkCount }
+      { name: 'Uplinks', value: uplinkCount },
+      { name: 'Failed', value: uplinkCount - activeUplinkCount }
     ];
 
     setCharData(dataItems);
@@ -55,9 +55,16 @@ function UplinkStatus({ org }) {
               <li className="jcsb d-flex">
                 <span>Uplinks:</span> <span>{uplinkCount}</span>
               </li>
-              <li className="jcsb d-flex">
+
+            { (uplinkCount - activeUplinkCount) > 0 && (
+              <li className={`jcsb d-flex ${(uplinkCount - activeUplinkCount) > 0 ? 'red-alert' : ''}`}>
                 <span>Failed:</span> <span>{uplinkCount - activeUplinkCount}</span>
               </li>
+                   
+               )}
+
+ 
+
             </ul>
           </Box>
         </>
