@@ -67,10 +67,23 @@ export const getOrganizationDevicesStatusesOverview = async(orgId) => {
 
         const resp = await axiosInstance.get(`/organizations/${orgId}/devices/statuses/overview`)
 
-        //console.log("uplinkStatuses", resp.data)
+        console.log("uplinkStatuses", resp.data.statuses)
         if (resp.data.ok)
         {
-            return resp.data.statuses
+            //return resp.data.statuses
+              const {alerting, dormant, offline, online} = resp.data.statuses.counts.byStatus
+              const res = {
+                    ok: true,
+                    counts: {
+                        byStatus:{
+                            "online":online,
+                           // "alerting":alerting
+                          //  "dormant":0,
+                            "offline":offline
+                        }
+                    }
+                }
+            return res 
         }
         else{
            // console.log("NOOK", resp.data.ok)
@@ -80,7 +93,7 @@ export const getOrganizationDevicesStatusesOverview = async(orgId) => {
                     counts: {
                         byStatus:{
                             "alerting":0,
-                            "dormant":0,
+                          //  "dormant":0,
                             "offline":0,
                             "online":0
                         }
@@ -95,7 +108,7 @@ export const getOrganizationDevicesStatusesOverview = async(orgId) => {
                     counts: {
                         byStatus:{
                             "alerting":0,
-                            "dormant":0,
+                           // "dormant":0,
                             "offline":0,
                             "online":0
                         }
@@ -105,43 +118,52 @@ export const getOrganizationDevicesStatusesOverview = async(orgId) => {
     }
 }
 
-export const getOrganizationApplianceUplinkStatuses = async(orgId) => {
+export const getOrganizationApplianceUplinkStatuses = async (orgId) => {
+  try {
+    const resp = await axiosInstance.get(`/organizations/${orgId}/appliance/uplink/statuses`);
+    const networks = Array.isArray(resp.data.networks) ? resp.data.networks : [];
+
+    return {
+      ok: true,
+      networks
+    };
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    return {
+      ok: false,
+      networks: []
+    };
+  }
+};
+
+export const getOrganizationApplianceUplinkStatusesd = async(orgId) => {
      //console.log("appliance consult:", orgId)
+     let res = []
     try {
-        
         const resp = await axiosInstance.get(`/organizations/${orgId}/appliance/uplink/statuses`)
+        
+        const networks = Array.isArray(resp.data.networks) ? resp.data.networks : [];
 
-        console.log("uplinkStatuses", resp.data.networks)
-        if (resp.data.ok)
+     //   console.log("uplinkStatuses", orgId, networks)
+    //    if (resp.data.ok)
         {
-            //console.log("ok", resp.data.ok)
-            const res = {
+            console.log("ok", resp.data.ok)
+             return {
                     ok: true,
-                    networks: resp.data.networks
+                    networks
             }
-            return res
-
+      
         }
-        else{
-           //console.log("NOOK", resp.data.ok)
+     
             
-            const res = {
-                    ok: false,
-                    counts: {
-                        byStatus:{
-                            "alerting":0,
-                            "dormant":0,
-                            "offline":0,
-                            "online":0
-                        }
-                    }
-                }
-        return res    
-        }
+          
+       // }
+             
     } catch (error) {
-       // console.log(`No hay permiso en orgId ${orgId}`)
+        console.log(`Errpr ${error.message}`)
             const res = {
                     ok: false,
+                    networks: [],
                     counts: 0
                 }
         return res

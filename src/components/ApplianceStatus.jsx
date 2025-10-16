@@ -21,7 +21,7 @@ export default function ApplianceStatus({orgId}) {
       .then((data) => {
         setLoading(false);
         setRedes(data?.networks || []);
-        console.log('Uplink data:', data);
+        //console.log('Uplink data:', data);
       })
       .catch((error) => {
         console.error('Error al obtener uplinks:', error);

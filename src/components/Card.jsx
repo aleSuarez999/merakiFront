@@ -17,7 +17,7 @@ function Card({
 
 
   const navigate = useNavigate();
-
+  console.log(org)
   return (
       <>
          

@@ -5,15 +5,16 @@ const data2 = [
       {name: "online", value: 15},
       {name: "alerting", value: 20},
       {name: "offline", value: 30},
-    //  {name: "dormant", value: 5} se remueve, no son alertas actuales
+      {name: "dormant", value: 5}
   
 ]
 
 
 //const COLORS = ["#427947ff", "#e0de55ff", "#b9473fff", "#CCC" ]
+//const COLORS = ["#427947ff", "#e0de55ff", "rgb(255, 102, 0)", "#CCC" ]
 const COLORS = ["#427947ff", "#b9473fff" ]
 
-const OrgStatusChart = (
+const DeviceStatusChart = (
   {data}
 ) => {
   
@@ -36,4 +37,4 @@ const OrgStatusChart = (
 
 }
 
-export default OrgStatusChart;
+export default DeviceStatusChart;

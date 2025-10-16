@@ -1,28 +1,26 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Text from './Text'
-import { NavLink, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 
 import Box from './Box';
 import { getOrganizationDevicesStatusesOverview } from '../utils/api';
-import OrgStatusChart from './OrgStatusChart';
+import DeviceStatusChart from './DeviceStatusChart';
 
 function DeviceStatus( { org }) 
 {
   const navigate = useNavigate();
-  const [orgStatus, setorgStatus] = useState([])
+  const [deviceStatus, setDeviceStatus] = useState([])
   const [charData, setCharData] = useState([])
- // console.log("sta", org)
- /* contenido org
- sta {id: '935608', name: '-MERAKI TECO - Organización Maestra - NO USAR NI EDITAR', url: 'https://n515.dashboard.meraki.com/o/Z-K5jc/manage/organization/overview', samlConsumerUrls: null, samlConsumerUrl: null, …}
- */
+
   useEffect(() => {
-   // console.log("sta", org.id)
+ 
     getOrganizationDevicesStatusesOverview(org.id)
     .then((data) => {
         // mando error en true cuando la api no tiene perfil para ver el cliente
         if (!data.error)
         {
-          setorgStatus(data.counts.byStatus)
+          setDeviceStatus(data.counts.byStatus)
+         // console.log(data.counts.byStatus)
         } 
           
       const dataItems = Object.entries(data.counts.byStatus).map(([name, value]) => ({
@@ -31,6 +29,7 @@ function DeviceStatus( { org })
 }));
 
     setCharData(dataItems)
+    // una vez que esta info está disponible se hace de nuevo el render del grafico
     //console.log("dataitems", dataItems)
 
     } )
@@ -43,20 +42,20 @@ function DeviceStatus( { org })
   return (
       <>
         
-          {orgStatus && Object.keys(orgStatus).length > 0 ? (
+          {deviceStatus && Object.keys(deviceStatus).length > 0 ? (
             
-            
+             
             
             <>
               <Box>
-                 <OrgStatusChart data={charData} />
+                 <DeviceStatusChart data={charData} />
               </Box>
               <Box className="w-100">
-                <ul className='orgStatus d-flex '>
-                    <li  className='jcsb d-flex'><span>Online:</span> <span> {orgStatus.online} </span></li>
-                    <li  className='jcsb d-flex'><span>Alert:</span> <span>  {orgStatus.alerting}</span></li>
-                    <li className='jcsb d-flex'><span>Dorm:</span><span>  {orgStatus.dormant} </span></li>
-                    <li  className='jcsb d-flex red-alert'><span>Offline:</span><span>  {orgStatus.offline} </span></li>
+                <ul className='deviceStatus d-flex '>
+                    <li  className='jcsb d-flex'><span>Online:</span> <span> {deviceStatus.online} </span></li>
+                  { /* <li  className='jcsb d-flex'><span>Alert:</span> <span>  {deviceStatus.alerting}</span></li>
+                    <li className='jcsb d-flex'><span>Dorm:</span><span>  {deviceStatus.dormant} </span></li> */}
+                    <li  className='jcsb d-flex red-alert'><span>Offline:</span><span>  {deviceStatus.offline} </span></li>
                 </ul>
               </Box>
             </>

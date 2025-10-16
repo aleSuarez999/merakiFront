@@ -1,93 +1,72 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Text from './Text'
-import { NavLink, useNavigate } from 'react-router'
-
+import React, { useEffect, useState } from 'react';
 import Box from './Box';
-import { getOrganizationApplianceUplinkStatuses } from '../utils/api';
 import UplinkStatusChart from './UplinkStatusChart';
+import { getOrganizationApplianceUplinkStatuses } from '../utils/api';
 
+function UplinkStatus({ org }) {
+  const [uplinkStatus1, setUplinkStatus] = useState([]);
+  const [charData, setCharData] = useState([]);
+  const [uplinkCount, setUplinkCount] = useState(0);
+  const [activeUplinkCount, setActiveUplinkCount] = useState(0);
 
-function UplinkStatus( { org }) 
-{
-  const navigate = useNavigate();
-  const [uplinkStatus, setUplinkStatus] = useState([])
-  const [charData, setCharData] = useState([])
-  
-  const [uplinkCount, setUplinkCount] = useState(0)
-  const [activeUplinkCount, setactiveUplinkCount] = useState(0)
-  
+  const fetchUplinks = async () => {
+    const data = await getOrganizationApplianceUplinkStatuses(org.id);
+    if (data.ok && Array.isArray(data.networks)) {
+      setUplinkStatus(data.networks);
+    } else {
+      setUplinkStatus([]);
+    }
+  };
 
- // console.log("sta", org)
- /* contenido org
- sta {id: '935608', name: '-MERAKI TECO - Organización Maestra - NO USAR NI EDITAR', url: 'https://n515.dashboard.meraki.com/o/Z-K5jc/manage/organization/overview', samlConsumerUrls: null, samlConsumerUrl: null, …}
- */
   useEffect(() => {
-    console.log("sta", org.id)
-    getOrganizationApplianceUplinkStatuses(org.id)
-    .then((data) => {
-        // mando error en true cuando la api no tiene perfil para ver el cliente
-        if (!data.error)
-        {
-          console.log("redesrecibidas", data)
-          setUplinkStatus(data)
-        } 
-          
-     
+    fetchUplinks(); // primera carga
 
-    //data.networks.map((obj) => {
-      // por cada red 
-     // console.log("estado", obj.uplinkCount, obj.activeUplinkCount)
-      
-    //})
+    const interval = setInterval(fetchUplinks, 20000); // cada 20 segundos
 
-    const uplinkCount = data.networks.reduce( 
-    (acc, obj) => acc + obj.uplinkCount , 0
-  )
-    setUplinkCount(uplinkCount)
-    const activeUplinkCount = data.networks.reduce( 
-    (acc, obj) => acc + obj.activeUplinkCount , 0
-  )
-    setactiveUplinkCount(activeUplinkCount)
+    return () => clearInterval(interval); // limpieza al desmontar
+  }, [org]);
+
+  useEffect(() => {
+    if (!Array.isArray(uplinkStatus1) || uplinkStatus1.length < 1) return;
+
+    const uplinkCount = uplinkStatus1.reduce((acc, obj) => acc + obj.uplinkCount, 0);
+    const activeUplinkCount = uplinkStatus1.reduce((acc, obj) => acc + obj.activeUplinkCount, 0);
+
+    setUplinkCount(uplinkCount);
+    setActiveUplinkCount(activeUplinkCount);
 
     const dataItems = [
-      { "name": "uplinkCount",
-        "value": uplinkCount},
-      { "name": "activeUplinkCount",
-        "value": uplinkCount - activeUplinkCount}
-    ]
-    setCharData(dataItems)
-    console.log("dataitems", dataItems)
+      { name: 'uplinkCount', value: uplinkCount },
+      { name: 'activeUplinkCount', value: uplinkCount - activeUplinkCount }
+    ];
 
-    } )
-    
-    .catch((error) => console.error(error.message, 1))
-
-  }, [org])
-  
+    setCharData(dataItems);
+  }, [uplinkStatus1]);
 
   return (
-      <>
-        
-          {uplinkStatus && Object.keys(uplinkStatus).length > 0 ? (
-            
-            <>
-              <Box>
-                 <UplinkStatusChart  data={charData} />
-              </Box>
-              <Box className="w-100">
-                <ul className='orgStatus d-flex '>
-                    <li  className='jcsb d-flex'><span>Uplinks:</span> <span> {uplinkCount} </span></li>
-                    <li  className='jcsb d-flex'><span>Failed:</span> <span>  {uplinkCount - activeUplinkCount}</span></li>
-            
-                    
-                </ul>
-              </Box>
-            </>
-          ) : <>No hay datos</>
-        }
-
+    <>
+      {uplinkStatus1.length > 0 ? (
+        <>
+          <Box>
+            <UplinkStatusChart data={charData} />
+          </Box>
+          <Box className="w-100">
+            <ul className="orgStatus d-flex">
+              <li className="jcsb d-flex">
+                <span>Uplinks:</span> <span>{uplinkCount}</span>
+              </li>
+              <li className="jcsb d-flex">
+                <span>Failed:</span> <span>{uplinkCount - activeUplinkCount}</span>
+              </li>
+            </ul>
+          </Box>
+        </>
+      ) : (
+        <>No hay datos</>
+      )}
     </>
-  )
+  );
 }
 
-export default UplinkStatus
+export default UplinkStatus;
+``
