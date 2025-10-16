@@ -62,7 +62,7 @@ function UplinkStatus({ org }) {
           </Box>
         </>
       ) : (
-        <>No hay datos</>
+        <><br></br>No informacion de uplinks</>
       )}
     </>
   );
