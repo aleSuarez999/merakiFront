@@ -5,6 +5,7 @@ import { NavLink, useNavigate } from 'react-router'
 import Box from './Box';
 
 import UplinkStatus from './UplinkStatus';
+import UplinkStatuses from '../pages/UplinkStatuses';
 
 
 function CardUplink({
@@ -22,9 +23,9 @@ function CardUplink({
       <>
          
           <Box className="card__body" onClick={onClick}>
-
+            <NavLink to={`/UplinkStatuses/${org.id}`}   >
               <Text as="p" className="card__title">{org.name}</Text>
-              
+              </NavLink>
               <Box className="d-flex card__status">
                 <UplinkStatus org={org} />
                 

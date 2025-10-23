@@ -1,0 +1,74 @@
+
+
+import { useEffect, useState } from 'react'
+
+
+import { useParams } from 'react-router'
+import {  getOrganizationApplianceUplinkStatusesAll } from '../utils/api'
+
+export default function UplinkStatuses() {
+
+  const [loading, setLoading] = useState(true)
+  const [uplinks, setUplinks] = useState([])
+  
+  const { orgId } = useParams();
+
+  useEffect(() => {
+    const fetchUplinks = async () => {
+      const res = await getOrganizationApplianceUplinkStatusesAll(orgId);
+      console.log ("ver", res)
+      if (res.ok) {
+
+
+      const sorted = res.networks.sort((a, b) => {
+        const aFailed = a.uplinks.some(u => u.status === 'failed');
+        const bFailed = b.uplinks.some(u => u.status === 'failed');
+        return bFailed - aFailed; // los fallados primero
+      });
+
+
+        setUplinks(sorted);
+        console.log("uplnikeses", sorted)
+        setLoading(false)
+
+      }
+    };
+    
+    fetchUplinks(); // primera carga
+    const interval = setInterval(fetchUplinks, 20000); // cada 20 segundos
+
+    return () => clearInterval(interval); // limpieza
+
+  }, [orgId]);
+
+
+  if (loading) {
+    //return <div>Cargando productos...</div>
+  }
+
+  if (loading) return <p>Cargando uplinks...</p>;
+
+  return (
+    <div>
+      <h2>Uplinks por red - Organización {orgId}</h2>
+      {uplinks.map((net, index) => (
+        <div key={index} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
+          
+          <h4>Network ID: {net.name}</h4>
+          <p>Serial: {net.serial}</p>
+          <p>Uplinks activos: {net.activeUplinkCount} / {net.uplinkCount}</p>
+          <ul>
+            {net.uplinks.map((uplink, i) => (
+              <li key={i}>
+                {uplink.interface}: {uplink.status}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+  
+

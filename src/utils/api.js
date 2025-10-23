@@ -136,6 +136,25 @@ export const getOrganizationApplianceUplinkStatuses = async (orgId) => {
   }
 };
 
+export const getOrganizationApplianceUplinkStatusesAll = async (orgId) => {
+  try {
+    const resp = await axiosInstance.get(`/organizations/${orgId}/appliance/uplink/statusesAll`);
+    const networks = Array.isArray(resp.data.networks) ? resp.data.networks : [];
+    console.log("REDES->", resp.data)
+    return {
+      ok: true,
+      networks
+    };
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    return {
+      ok: false,
+      networks: []
+    };
+  }
+};
+
+
 export const getOrganizationApplianceUplinkStatusesd = async(orgId) => {
      //console.log("appliance consult:", orgId)
      let res = []

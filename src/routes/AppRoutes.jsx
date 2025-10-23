@@ -6,6 +6,7 @@ import Devices from '../pages/Devices';
 import Uplinks from '../pages/Uplinks';
 import "../styles/main.scss";
 import Provider from "../context/Provider"
+import UplinkStatuses from '../pages/UplinkStatuses';
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
 const basename = isProduction ? '/help2/merakiApp' : '/';
 
@@ -23,6 +24,7 @@ function AppRoutes() {
             <Route path="/" element={<DashBoard />} />
             <Route path="/Devices" element={<Devices />} />
             <Route path="/Uplinks" element={<Uplinks />} />
+            <Route path="/UplinkStatuses/:orgId" element={<UplinkStatuses />} />
           
         </Route>
       </Routes>
