@@ -4,7 +4,8 @@ import { NavLink, useNavigate } from 'react-router'
 
 import Box from './Box';
 
-import DeviceStatus from './DeviceStatus';
+//import DeviceStatus from './DeviceStatus';
+import DeviceStatusAutoUpdate from './DeviceStatusAutoUpdate';
 
 
 function CardDevices({
@@ -26,7 +27,7 @@ function CardDevices({
               <Text as="p" className="card__title">{org.name}</Text>
               
               <Box className="d-flex card__status">
-                <DeviceStatus org={org} />
+                <DeviceStatusAutoUpdate org={org} />
                 
               </Box>
           </Box>

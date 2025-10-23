@@ -67,7 +67,7 @@ export const getOrganizationDevicesStatusesOverview = async(orgId) => {
 
         const resp = await axiosInstance.get(`/organizations/${orgId}/devices/statuses/overview`)
 
-        console.log("uplinkStatuses", resp.data.statuses)
+        //console.log("uplinkStatuses", resp.data.statuses)
         if (resp.data.ok)
         {
             //return resp.data.statuses

@@ -6,39 +6,43 @@ import Box from './Box';
 import { getOrganizationDevicesStatusesOverview } from '../utils/api';
 import DeviceStatusChart from './DeviceStatusChart';
 
-function DeviceStatus( { org }) 
+function DeviceStatusAutoUpdate( { org }) 
 {
   const navigate = useNavigate();
   const [deviceStatus, setDeviceStatus] = useState([])
   const [charData, setCharData] = useState([])
 
-  useEffect(() => {
- 
-    getOrganizationDevicesStatusesOverview(org.id)
-    .then((data) => {
-        // mando error en true cuando la api no tiene perfil para ver el cliente
-        if (!data.error)
-        {
-          setDeviceStatus(data.counts.byStatus)
-          console.log(data.counts.byStatus)
-        } 
-          
-      const dataItems = Object.entries(data.counts.byStatus).map(([name, value]) => ({
-  name,
-  value
-}));
+  const fetchDevices = async () => {
+      const data = await getOrganizationDevicesStatusesOverview(org.id);
+      if (!data.error){
+        setDeviceStatus(data.counts.byStatus)
+      } 
+    };
 
-    setCharData(dataItems)
-    // una vez que esta info está disponible se hace de nuevo el render del grafico
-    //console.log("dataitems", dataItems)
-
-    } )
+     useEffect(() => {
+        fetchDevices(); // primera carga
     
-    .catch((error) => console.error(error.message))
+        const interval = setInterval(fetchDevices, 20000); // cada 20 segundos
+    
+        return () => clearInterval(interval); // limpieza al desmontar
+      }, [org]);
 
-  }, [org])
-  
+      useEffect(() => {
+        if (!deviceStatus || Object.keys(deviceStatus).length < 1) return;
 
+      
+      const dataItems = Object.entries(deviceStatus).map(([name, value]) => 
+        ({
+          name,
+          value
+        }
+        ))
+      console.log(dataItems)
+      setCharData(dataItems)
+
+      }, [deviceStatus])
+      
+          
   return (
       <>
         
@@ -68,4 +72,4 @@ function DeviceStatus( { org })
   )
 }
 
-export default DeviceStatus
+export default DeviceStatusAutoUpdate
