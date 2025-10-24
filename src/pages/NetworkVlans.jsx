@@ -1,58 +1,63 @@
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { getNetworkVlans } from '../utils/api';
+import Box from '../components/Box';
+import CardVlans from '../components/CardVlans';
 
-
-import { useEffect, useState } from 'react'
-
-
-import { NavLink, useParams } from 'react-router'
-import {  getNetworkVlans } from '../utils/api'
-import Box from '../components/Box'
-
-export default function NetworkVlans  ()  {
-
-  const [loading, setLoading] = useState(true)
-  const [networkVlans, setnetworkVlans] = useState([])
-  
+export default function NetworkVlans() {
+  const [loading, setLoading] = useState(true);
+  const [networkVlans, setnetworkVlans] = useState([]);
+  const [viewAsList, setViewAsList] = useState(false);
   const { networkId } = useParams();
 
   useEffect(() => {
     const fetchVlans = async () => {
       const res = await getNetworkVlans(networkId);
-      console.log ("ver", res)
-      setnetworkVlans(res)
+      setnetworkVlans(res);
+      setLoading(false);
     };
-    
-    fetchVlans()
-    setLoading(false)
 
+    fetchVlans();
   }, [networkId]);
-
-
-  if (loading) {
-    //return <div>Cargando productos...</div>
-  }
 
   if (loading) return <p>Cargando vlans...</p>;
 
   return (
-    <Box className="network-container">
-      
-      {
-        (networkVlans) && (
-        networkVlans.map((net, index) => (
-        
-        <Box key={index} className="vlan_container">
-          <h5>VlanName: - {net.name}</h5>  
+    <>
+      <label style={{ marginBottom: '1rem', display: 'block' }}>
+        <input
+          type="checkbox"
+          checked={viewAsList}
+          onChange={() => setViewAsList(!viewAsList)}
+        />
+        {' '}Mostrar como lista
+      </label>
+
+      {viewAsList ? (
+        <Box className="vlan_container">
           <ul>
-            <li>Ip: {net.applianceIp} / Net: {net.subnet}</li>
-            <li>Vlan: {net.id}</li>
+            {networkVlans && networkVlans.map((data, index) => (
+              <li key={index} style={{ marginBottom: '1rem' }}>
+                <h5>VlanName: - {data.name}</h5>
+                <div>Ip: {data.applianceIp} / Net: {data.subnet}</div>
+                <div>Vlan: {data.id}</div>
+              </li>
+            ))}
           </ul>
         </Box>
-      ))
-    )
-    }
-    </Box>
+      ) : (
+        <Box className="org__grid">
+          {networkVlans && networkVlans.map((data) => (
+            <Box
+              key={`B${data.id}`}
+              id={`B${data.id}`}
+              className="col-xs-12 col-sm-6 col-lg-3 col-xl-4 col-xxl-4"
+            >
+              <CardVlans vlans={data} />
+            </Box>
+          ))}
+        </Box>
+      )}
+    </>
   );
 }
-
-  
-
