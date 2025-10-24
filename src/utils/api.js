@@ -189,3 +189,18 @@ export const getOrganizationApplianceUplinkStatusesd = async(orgId) => {
     }
 }
 
+export const getNetworkVlans = async (networkId) => {
+    try{
+
+        const resp = await axiosInstance.get(`/networks/${networkId}/vlans`)
+        if (resp.data.ok)
+        {
+            return resp.data.networks
+        }
+    }
+    catch(error) {
+        console.error(error.message)
+        return []
+    }
+
+}

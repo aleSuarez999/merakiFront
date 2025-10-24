@@ -1,12 +1,13 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import Layout from '../layout/Layout';
-import DashBoard from '../pages/Dashboard';
+
 import Login from '../components/Login';
 import Devices from '../pages/Devices';
 import Uplinks from '../pages/Uplinks';
 import "../styles/main.scss";
 import Provider from "../context/Provider"
 import UplinkStatuses from '../pages/UplinkStatuses';
+import NetworkVlans from '../pages/NetworkVlans';
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
 const basename = isProduction ? '/help2/merakiApp' : '/';
 
@@ -25,6 +26,7 @@ function AppRoutes() {
             <Route path="/Devices" element={<Devices />} />
             <Route path="/Uplinks" element={<Uplinks />} />
             <Route path="/UplinkStatuses/:orgId" element={<UplinkStatuses />} />
+            <Route path="/networks/:networkId/vlans" element={<NetworkVlans />} />
           
         </Route>
       </Routes>
