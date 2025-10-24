@@ -1,0 +1,35 @@
+.uplink-container {
+  border: 1px solid #ccc;
+  margin: 10px;
+  padding: 15px;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+
+  h4 {
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+    color: #333;
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+
+    li {
+      margin-bottom: 8px;
+      padding: 6px;
+      background-color: #fff;
+      border-left: 4px solid #ddd;
+
+      &.down {
+        border-left-color: red;
+        background-color: #ffe6e6;
+      }
+
+      &.active {
+        border-left-color: green;
+        background-color: #e6ffe6;
+      }
+    }
+  }
+}

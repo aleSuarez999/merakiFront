@@ -21,7 +21,7 @@ function AppRoutes() {
           <Route path="/login" element={<Login />} />
         <Route element={<Provider><Layout /></Provider>}>
           
-            <Route path="/" element={<DashBoard />} />
+            <Route path="/" element={<Uplinks />} />
             <Route path="/Devices" element={<Devices />} />
             <Route path="/Uplinks" element={<Uplinks />} />
             <Route path="/UplinkStatuses/:orgId" element={<UplinkStatuses />} />
