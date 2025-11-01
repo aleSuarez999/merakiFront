@@ -29,7 +29,7 @@ export default function UplinkStatuses() {
 
 
         setUplinks(sorted);
-        console.log("uplnikeses", sorted)
+        //console.log("uplnikeses", sorted)
         setLoading(false)
 
       }
@@ -55,7 +55,8 @@ export default function UplinkStatuses() {
       {uplinks.map((net, index) => (
         <Box key={index} style={{ border: '1px solid #ccc', margin: '0px', padding: '5px' }}>
           
-          <h5>Network ID: <NavLink to={`/networks/${net.networkId}/vlans`}   >{net.name}</NavLink></h5>
+          <h5>Network ID: {net.name}</h5>
+          <NavLink to={`/networks/${net.networkId}/vlans`}   >Vlans</NavLink>
            
           <p>Serial: {net.serial}</p>
           <p>Uplinks activos: {net.activeUplinkCount} / {net.uplinkCount}</p>

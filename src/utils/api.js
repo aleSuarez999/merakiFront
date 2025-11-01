@@ -45,6 +45,16 @@ export const getOrgs = async () => {
     }
 }
 
+export const getOrgsSinFiltro = async () => {
+    const resp = await axiosInstance.get("/organizations/sinFiltro")
+    //console.log(resp.data.orgs)
+    if (resp.data.ok)
+    {
+        //{ok=true, orgs=[]}
+        return resp.data.orgs
+    }
+}
+
 export const getNetworksByOrg = async (orgId) => {
     try{
 
@@ -140,7 +150,7 @@ export const getOrganizationApplianceUplinkStatusesAll = async (orgId) => {
   try {
     const resp = await axiosInstance.get(`/organizations/${orgId}/appliance/uplink/statusesAll`);
     const networks = Array.isArray(resp.data.networks) ? resp.data.networks : [];
-    console.log("REDES->", resp.data)
+   // console.log("REDES->", resp.data)
     return {
       ok: true,
       networks
@@ -195,6 +205,7 @@ export const getNetworkVlans = async (networkId) => {
         const resp = await axiosInstance.get(`/networks/${networkId}/vlans`)
         if (resp.data.ok)
         {
+           // console.log("resp.data.networks", resp.data.networks)
             return resp.data.networks
         }
     }
@@ -204,3 +215,18 @@ export const getNetworkVlans = async (networkId) => {
     }
 
 }
+
+export const copyVlans = async (vlans, targetNetworkId) => {
+    console.info("api copiar vlans")
+    // vlans sería el body
+    try {
+        const resp = await axiosInstance.post(`/networks/${targetNetworkId}/vlans`, {vlans})
+        console.info("resp post vlan: ", resp.data)
+        return resp.data
+        
+    } catch (error) {
+      console.error("error post vlan: ", error.message)
+      return error
+    }
+  
+} 

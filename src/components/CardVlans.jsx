@@ -9,12 +9,15 @@ import DeviceStatusAutoUpdate from './DeviceStatusAutoUpdate';
 
 function CardVlans({
     vlans,
+    updateVlanField,
+    selectedData,
+    isSelected,
     onClick,
     ...props
 
 }) {
 
-  console.log("netvla1n", vlans)
+  //console.log("netvla1n", vlans)
 
   const navigate = useNavigate();
 
@@ -23,15 +26,25 @@ function CardVlans({
          
           <Box className="card__vlans__body" onClick={onClick}>
 
-              <Text as="p" className="card__title">{vlans.name}</Text>
+           
               {
               (vlans) && (
                     
                     <Box key={vlans.interfaceId} className="vlan_container">
-                      <h5>VlanName: - {vlans.name}</h5>  
+                      <h5>Id: {vlans.id} VlanName: - {vlans.name}</h5>  
                       <ul>
-                        <li>Ip: {vlans.applianceIp} / Net: {vlans.subnet}</li>
-                        <li>Vlan: {vlans.id}</li>
+                        <li><input
+                      type="text"
+                      value={isSelected ? selectedData.applianceIp : vlans.applianceIp}
+                      onChange={(e) => updateVlanField(vlans.id, 'applianceIp', e.target.value)}
+                      disabled={!isSelected}
+                    /></li>
+                        <li><input
+                      type="text"
+                      value={isSelected ? selectedData.subnet : vlans.subnet}
+                      onChange={(e) => updateVlanField(vlans.id, 'subnet', e.target.value)}
+                      disabled={!isSelected}
+                    /></li>
                       </ul>
                     </Box>
               

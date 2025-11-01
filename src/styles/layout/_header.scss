@@ -21,3 +21,8 @@ align-items: center;
 }
 
 
+
+header h2 {
+  z-index: 1; /* o eliminar si está muy alto */
+  margin-bottom: 2rem; /* separa el título del contenido */
+}

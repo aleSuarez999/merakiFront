@@ -10,6 +10,14 @@ export default function NetworkVlans() {
   const [viewAsList, setViewAsList] = useState(false);
   const { networkId } = useParams();
 
+
+  const [organizations, setOrganizations] = useState([]);
+  const [selectedOrg, setSelectedOrg] = useState('');
+  const [networks, setNetworks] = useState([]);
+  const [selectedNetwork, setSelectedNetwork] = useState('');
+  const [sourceVlans, setSourceVlans] = useState([]);
+
+
   useEffect(() => {
     const fetchVlans = async () => {
       const res = await getNetworkVlans(networkId);
