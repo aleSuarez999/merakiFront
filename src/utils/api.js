@@ -222,7 +222,7 @@ export const getNetworkSsids = async (networkId) => {
         const resp = await axiosInstance.get(`/networks/${networkId}/wireless/ssids`)
         if (resp.data.ok)
         {
-            console.log("resp.data", resp.data)
+            //console.log("resp.data", resp.data)
             return resp.data
         }
     }
@@ -239,6 +239,22 @@ export const copyVlans = async (vlans, targetNetworkId) => {
     try {
         const resp = await axiosInstance.post(`/networks/${targetNetworkId}/vlans`, {vlans})
         console.info("resp post vlan: ", resp.data)
+        return resp.data
+        
+    } catch (error) {
+      console.error("error post vlan: ", error.message)
+      return error
+    }
+  
+} 
+
+
+export const copySsids = async (ssids, targetNetworkId) => {
+    console.info("api copiar vlans")
+    // vlans sería el body
+    try {
+        const resp = await axiosInstance.post(`/networks/${targetNetworkId}/wireless/ssids`, {ssids})
+        console.info("resp post ssids: ", resp.data)
         return resp.data
         
     } catch (error) {

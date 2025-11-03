@@ -1,60 +1,190 @@
-import { useEffect, useState } from "react";
-import { getNetworkSsids } from "../utils/api";
-import { useParams } from "react-router";
-import SelectNetwork from "../components/SelectNetwork";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { getNetworkSsids, getOrgsSinFiltro, getNetworksByOrg, copySsids } from '../utils/api';
+import Box from '../components/Box';
+import CardSsids from '../components/CardSsids';
 
-
-function NetworkSsdis() {
-
-  const [networkSsid, setNetworkSsid] = useState([])
-
+export default function Networkssids2() {
+  const [loading, setLoading] = useState(true);
+  const [networkSsids, setnetworkSsids] = useState([]);
+  const [viewAsList, setViewAsList] = useState(false);
   const { networkId } = useParams();
 
+  const [organizations, setOrganizations] = useState([]);
+  const [selectedOrg, setSelectedOrg] = useState('');
+  const [networks, setNetworks] = useState([]);
+  const [selectedNetwork, setSelectedNetwork] = useState('');
+  const [dstNetwork, setDstNetwork] = useState('');
+  const [dstSsids, setDstSsids] = useState([]);
+
+  // SSIDs seleccionadas con datos editables
+  const [selectedSsids, setSelectedSsids] = useState([]);
+
   useEffect(() => {
+    console.log("networkId->", networkId)
+    const fetchSsids = async () => {
+      const res = await getNetworkSsids(networkId);
+      console.log("datassid", res.data)
+      setnetworkSsids(res.data);
+      setLoading(false);
+    };
+    fetchSsids();
+  }, [networkId]);
 
-    const fetchSSids = async () => {
-      try {
-        const response = await getNetworkSsids(networkId)
-        console.log(response.data)
-        return response.data
-      } catch (error) {
-        console.log(error.message)
-      }
-      return 
-    } 
+  // al inicio se muestra el list de orgs
 
+  useEffect(() => {
+    // este es el destino donde se va a copiar el ssid
+    if (selectedNetwork) {
 
-    fetchSSids()
-
-
-  }, [networkId])
+      const fetchSsids = async () => {
+      const res = await getNetworkSsids(selectedNetwork);
+      setDstSsids(res.data);
+      setLoading(false);
+    };
+    fetchSsids();
+  }
+    else{
+      setDstSsids([])
+    }
+    
+  }, [selectedNetwork])
   
 
-      useEffect(() => {
-        
-        if (selectedNetwork) {
-    
-          const fetchVlans = async () => {
-          const res = await getNetworkVlans(selectedNetwork);
-          setDstVlans(res);
-          setLoading(false);
-        };
-        fetchVlans();
+
+  useEffect(() => {
+    const fetchOrgs = async () => {
+      const orgs = await getOrgsSinFiltro();
+      // esto es para poder elegir el tecotest que filtro para los gráficos
+      setOrganizations(orgs);
+    };
+    fetchOrgs();
+  }, []);
+
+  // por cada cambio en las orgs muestro las redes
+  useEffect(() => {
+    if (selectedOrg) {
+      const fetchNetworks = async () => {
+        const nets = await getNetworksByOrg(selectedOrg);
+        setNetworks(nets);
+      };
+      fetchNetworks();
+    } else {
+      setNetworks([]);
+    }
+  }, [selectedOrg]);
+
+  // Toggle selección
+
+  const toggleSsidSelection = (ssid) => {
+    setSelectedSsids((prev) => {
+      const exists = prev.find((v) => v.name === ssid.name);
+      if (exists) {
+        // si existe la saco
+        return prev.filter((v) => v.name !== ssid.name);
+      } else {
+        // si no existe la agrego,  toggle
+        return [...prev, { ...ssid }]; // copiar datos originales
       }
-        else{
-          setDstVlans([])
-        }
-        
-      }, [selectedNetwork])
+    });
+  };
+
+  // Actualizar IP o Subnet en SSID seleccionada
+  const updateSsidField = (id, field, value) => {
+    setSelectedSsids((prev) =>
+      // si el id coincide coloco todos los actuales y reemplazo el campo field con el value, sino mando v el anterior
+      prev.map((v) => (v.id === id ? { ...v, [field]: value } : v))
+    );
+  };
+
+  // Enviar SSIDs seleccionadas
+  const handleSendSelectedSsids = async () => {
+    if (!selectedNetwork || selectedSsids.length === 0) {
+      alert('Selecciona una red destino y al menos una SSID.');
+      return;
+    }
+    try {
+      // selectedSsids tiene appliance ssids asi en el json que viene de la misma api
+      // pero con el agregado del cambio de las ip si fué necesario
+      console.log("ssids a copiar", selectedSsids)
+      await copySsids(selectedSsids, selectedNetwork);
+      alert('SSIDs copiadas correctamente.');
+    } catch (err) {
+      alert('Error al copiar SSIDs: ' + err.message);
+    }
+  };
+
+  if (loading) return <p>Cargando ssids...</p>;
 
   return (
-    <div>NetworkSsdis
-      <SelectNetwork  />
+    <>
+    
+   
+      <label style={{ marginBottom: '1rem', display: 'block' }}>
+        <input
+          type="checkbox"
+          checked={viewAsList}
+          onChange={() => setViewAsList(!viewAsList)}
+        />
+        {' '}Mostrar como lista
+      </label>
 
-    </div>
-  )
+      <div style={{ marginBottom: '1rem' }}>
+        <label>Organización: </label>
+        <select value={selectedOrg} onChange={(e) => setSelectedOrg(e.target.value)}>
+          <option value="">Seleccione organización</option>
+          {organizations.map(org => (
+            <option key={org.id} value={org.id}>{org.name}</option>
+          ))}
+        </select>
+      </div>
 
+      <div style={{ marginBottom: '1rem' }}>
+        <label>Red destino: </label>
+        <select value={selectedNetwork} onChange={(e) => setSelectedNetwork(e.target.value)}>
+          <option value="">Seleccione red</option>
+          {networks.map(net => (
+            <option key={net.id} value={net.id}>{net.name} - {net.id}</option>
+          ))}
+        </select>
+      </div>
+      {selectedNetwork && dstSsids.length > 0 && (
+        <div style={{ marginTop: '1rem', padding: '10px', border: '1px solid #ccc', background: '#f9f9f9' }}>
+          <h4>Resumen SSIDs de la red seleccionada:</h4>
+          <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+            {dstSsids.map((ssid) => (
+              <li key={ssid.name} style={{ marginBottom: '5px' }}>
+                {ssid.networkId} | <strong>Nro:</strong> {ssid.number} | <strong>Nombre:</strong> {ssid.name} | <strong>IP:</strong> {ssid.applianceIp}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
+      <button onClick={handleSendSelectedSsids}>Copiar SSIDs seleccionadas desde {networkId}</button>
+
+      {/* Vista SSIDs actual */}
+        {(
+        <Box className="org__grid">
+          {(networkSsids && networkSsids.length > 0) && networkSsids.map((data) => {
+            const isSelected = selectedSsids.some((v) => v.number === data.number);
+            const selectedData = selectedSsids.find((v) => v.number === data.number);
+            return (
+              <Box key={data.name} className="col-xs-12 col-sm-6 col-lg-3 col-xl-4 col-xxl-4">
+                <div  className='card__ssids__container'>
+                  <input className='ssid__selector'
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleSsidSelection(data)}
+                  />
+                  <CardSsids ssids={data} selectedData={selectedData} isSelected={isSelected} toggleSsidSelection={toggleSsidSelection} updateSsidField={updateSsidField} />
+
+                </div>
+              </Box>
+            );
+          })}
+        </Box>
+      )}
+    </>
+  );
 }
-
-export default NetworkSsdis

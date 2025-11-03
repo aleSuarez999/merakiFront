@@ -109,3 +109,30 @@
       max-width: 100%;
     }
   }
+
+.card__ssids__container{
+  border: 1px solid grey;
+  padding: 1rem;
+  border-radius: 1rem;
+  flex-direction: row;
+  display: flex;
+}
+
+ .card__ssids__body{
+  ul{
+    margin-left: 0;
+    padding: 0;
+    li{
+      list-style-type: none;
+      margin-left: 0;
+    }
+
+  }
+ }
+
+  .ssid__selector {
+    display: flex;
+    align-self: center;
+    margin-right: 1rem;
+
+  }
