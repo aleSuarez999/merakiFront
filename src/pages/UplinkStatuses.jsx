@@ -56,7 +56,8 @@ export default function UplinkStatuses() {
         <Box key={index} style={{ border: '1px solid #ccc', margin: '0px', padding: '5px' }}>
           
           <h5>Network ID: {net.name}</h5>
-          <NavLink to={`/networks/${net.networkId}/vlans`}   >Vlans</NavLink>
+          <NavLink to={`/networks/${net.networkId}/vlans`}   >Vlans </NavLink> - 
+          <NavLink to={`/networks/${net.networkId}/wireless/ssids`}   > SSids </NavLink>
            
           <p>Serial: {net.serial}</p>
           <p>Uplinks activos: {net.activeUplinkCount} / {net.uplinkCount}</p>

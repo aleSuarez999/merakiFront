@@ -7,8 +7,9 @@ import Uplinks from '../pages/Uplinks';
 import "../styles/main.scss";
 import Provider from "../context/Provider"
 import UplinkStatuses from '../pages/UplinkStatuses';
-import NetworkVlans from '../pages/NetworkVlans';
+//import NetworkVlans from '../pages/NetworkVlans';
 import NetworkVlans2 from '../pages/NetworkVlans2';
+import NetworkSsdis from '../pages/NetworkSsids';
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
 const basename = isProduction ? '/help2/merakiApp' : '/';
 
@@ -28,6 +29,7 @@ function AppRoutes() {
             <Route path="/Uplinks" element={<Uplinks />} />
             <Route path="/UplinkStatuses/:orgId" element={<UplinkStatuses />} />
             <Route path="/networks/:networkId/vlans" element={<NetworkVlans2 />} />
+            <Route path="/networks/:networkId/wireless/ssids" element={<NetworkSsdis />} />
           
         </Route>
       </Routes>

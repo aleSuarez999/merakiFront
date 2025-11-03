@@ -216,6 +216,23 @@ export const getNetworkVlans = async (networkId) => {
 
 }
 
+export const getNetworkSsids = async (networkId) => {
+    try{
+
+        const resp = await axiosInstance.get(`/networks/${networkId}/wireless/ssids`)
+        if (resp.data.ok)
+        {
+            console.log("resp.data", resp.data)
+            return resp.data
+        }
+    }
+    catch(error) {
+        console.error(error.message)
+        return []
+    }
+
+}
+
 export const copyVlans = async (vlans, targetNetworkId) => {
     console.info("api copiar vlans")
     // vlans sería el body

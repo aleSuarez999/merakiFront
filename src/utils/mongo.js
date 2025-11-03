@@ -32,10 +32,11 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-
+/*
 export const postOrg = async (body) => {
    
    // console.log("mando body", body)
     const resp = await axiosInstance.post("/organizations", body)
     return resp.data
 }
+*/
