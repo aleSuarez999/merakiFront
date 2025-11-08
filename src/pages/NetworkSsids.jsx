@@ -4,7 +4,7 @@ import { getNetworkSsids, getOrgsSinFiltro, getNetworksByOrg, copySsids } from '
 import Box from '../components/Box';
 import CardSsids from '../components/CardSsids';
 
-export default function Networkssids2() {
+export default function Networkssids() {
   const [loading, setLoading] = useState(true);
   const [networkSsids, setnetworkSsids] = useState([]);
   const [viewAsList, setViewAsList] = useState(false);
@@ -36,13 +36,22 @@ export default function Networkssids2() {
   useEffect(() => {
     // este es el destino donde se va a copiar el ssid
     if (selectedNetwork) {
+      try {
+        // se mete en try porque sino tiene wireless activo da error
+        const fetchSsids = async () => {
+        const res = await getNetworkSsids(selectedNetwork);
+        setDstSsids(res.data);
+        setLoading(false);
+        }
+        fetchSsids();
 
-      const fetchSsids = async () => {
-      const res = await getNetworkSsids(selectedNetwork);
-      setDstSsids(res.data);
-      setLoading(false);
-    };
-    fetchSsids();
+      } catch (error) {
+        console.log(error)
+        setDstSsids([])  
+      }
+      
+    
+    
   }
     else{
       setDstSsids([])
