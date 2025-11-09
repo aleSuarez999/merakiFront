@@ -112,10 +112,18 @@
 
 .card__ssids__container{
   border: 1px solid grey;
-  padding: 1rem;
+  padding: 0.5rem;
   border-radius: 1rem;
   flex-direction: row;
   display: flex;
+  //height: 7rem;
+  .ssid__name{
+    height: 2rem;
+  }
+  .ssid__vlan{
+    width: 30%;
+    text-align: center;
+  }
 }
 
  .card__ssids__body{

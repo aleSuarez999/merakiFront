@@ -99,10 +99,10 @@ export default function Networkssids() {
   };
 
   // Actualizar IP o Subnet en SSID seleccionada
-  const updateSsidField = (id, field, value) => {
+  const updateSsidField = (number, field, value) => {
     setSelectedSsids((prev) =>
       // si el id coincide coloco todos los actuales y reemplazo el campo field con el value, sino mando v el anterior
-      prev.map((v) => (v.id === id ? { ...v, [field]: value } : v))
+      prev.map((v) => (v.number === number ? { ...v, [field]: value } : v))
     );
   };
 
@@ -163,7 +163,7 @@ export default function Networkssids() {
           <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
             {dstSsids.map((ssid) => (
               <li key={ssid.name} style={{ marginBottom: '5px' }}>
-                {ssid.networkId} | <strong>Nro:</strong> {ssid.number} | <strong>Nombre:</strong> {ssid.name} | <strong>IP:</strong> {ssid.applianceIp}
+                {ssid.networkId} | <strong>Nro:</strong> {ssid.number} | <strong>Nombre:</strong> {ssid.name} | <strong>Vlan:</strong> {ssid.defaultVlanId}
               </li>
             ))}
           </ul>
@@ -179,7 +179,7 @@ export default function Networkssids() {
             const isSelected = selectedSsids.some((v) => v.number === data.number);
             const selectedData = selectedSsids.find((v) => v.number === data.number);
             return (
-              <Box key={data.name} className="col-xs-12 col-sm-6 col-lg-3 col-xl-4 col-xxl-4">
+              <Box key={data.name} className="col-xs-6 col-sm-3 col-lg-3 col-xl-2 col-xxl-2">
                 <div  className='card__ssids__container'>
                   <input className='ssid__selector'
                     type="checkbox"
