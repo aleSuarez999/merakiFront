@@ -11,6 +11,7 @@ import UplinkStatuses from '../pages/UplinkStatuses';
 import NetworkVlans2 from '../pages/NetworkVlans2';
 import NetworkSsdis from '../pages/NetworkSsids';
 import { NetworkProvider } from '../context/networkContext';
+import PrivateRoute from './PrivateRoutes';
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
 const basename = isProduction ? '/help2/merakiApp' : '/';
 
@@ -25,11 +26,11 @@ function AppRoutes() {
           <Route path="/login" element={<Login />} />
         <Route element={<Provider><Layout /></Provider>}>
           
-            <Route path="/" element={<Uplinks />} />
-            <Route path="/Devices" element={<Devices />} />
-            <Route path="/Uplinks" element={<Uplinks />} />
-            <Route path="/UplinkStatuses/:orgId" element={<UplinkStatuses />} />
-            <Route path="/networks/:networkId/vlans" element={<NetworkVlans2 />} />
+            <Route path="/" element={<PrivateRoute><Uplinks /></PrivateRoute>} />
+            <Route path="/Devices" element={<PrivateRoute><Devices /></PrivateRoute>} />
+            <Route path="/Uplinks" element={<PrivateRoute><Uplinks /></PrivateRoute>} />
+            <Route path="/UplinkStatuses/:orgId" element={<PrivateRoute><UplinkStatuses/> </PrivateRoute>} />
+            <Route path="/networks/:networkId/vlans" element={<PrivateRoute><NetworkVlans2 /></PrivateRoute>} />
 
 
             <Route path="/networks/:networkId/wireless/ssids" element={<NetworkProvider><NetworkSsdis /></NetworkProvider>} />

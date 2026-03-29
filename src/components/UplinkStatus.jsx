@@ -59,12 +59,12 @@ function UplinkStatus({ org }) {
           <Box className="w-100">
             <ul className="orgStatus d-flex">
               <li className="jcsb d-flex">
-                <span>W:{uplinkCount}</span>
+                <span>Wan:{uplinkCount}</span>
               </li>
 
             { (uplinkCount - activeUplinkCount) > 0 && (
               <li className="jcsb d-flex red-alert">
-                <span>F:{uplinkCount - activeUplinkCount}</span>
+                <span>Fail:{uplinkCount - activeUplinkCount}</span>
               </li>
                    
                )}
@@ -72,7 +72,7 @@ function UplinkStatus({ org }) {
            {/* Alerta: sitio con doble vinculo y solo uno activo */}
               {hayAlertaUltimoUplink && (
                 <li className="jcsb d-flex uplink-last-warning">
-                  <span>⚠ Riesgo</span>
+                  <span>⚠ Risk</span>
                   <span>{sitiosEnRiesgo.length}</span>
                 </li>
               )}

@@ -104,7 +104,7 @@
   text-transform: uppercase;
   // Prefijo estético tipo terminal
   &::before {
-    content: '//';
+    content: '';
     color: $color-text-muted;
     margin-right: 0.4rem;
     font-weight: 400;

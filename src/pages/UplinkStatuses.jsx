@@ -8,13 +8,13 @@ import IpWhoisTooltip from '../components/IpWhoisTooltip'
 // Construye la URL directa al portal de Meraki para una red.
 export default function UplinkStatuses() {
 
+  const orgs = useContext(Context)
   const [loading, setLoading]  = useState(true)
   const [uplinks, setUplinks]  = useState([])
   const [orgActual, setOrgActual] = useState([])
 
   const { orgId } = useParams();
-  const orgs = useContext(Context)
-
+  
   useEffect(() => {
     const fetchUplinks = async () => {
       const res = await getOrganizationApplianceUplinkStatusesAll(orgId);
@@ -37,8 +37,10 @@ export default function UplinkStatuses() {
     };
 
     fetchUplinks();
+    console.log("recargando")
     const interval = setInterval(fetchUplinks, 20000);
     return () => clearInterval(interval);
+
   }, [orgId]);
 
   if (loading) return <p>Cargando uplinks...</p>;
@@ -49,7 +51,7 @@ export default function UplinkStatuses() {
 
   return (
     <Box className="uplink-container">
-      <h2>Uplinks por red - Org: {orgActual.name}</h2>
+      <h2>Uplinks por red - Org: {orgActual?.name}</h2>
 
       {/* ── Banner de alerta global ───────────────────────────────────────── */}
       {sitiosEnRiesgo.length > 0 && (

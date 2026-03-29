@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
+import logo from "../assets/logo.webp";
+import ciscoLogo from "../assets/cisco.svg";
+
 
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
 const loginURL = isProduction ? 'api/login' : 'http://localhost:4000/api/login';
@@ -50,7 +53,13 @@ useEffect(() => {
   };
 
   return (
-    <div className="login__container">
+    <div className="login-wrapper">
+      
+         
+      <img src={logo} alt="logo" className='logo' />SD-WAN
+      <h3><img src={ciscoLogo} alt="logo" className='logo' /></h3>
+ 
+<div className="login__container">
       <form onSubmit={handleLogin}>
         <h2>Iniciar sesión</h2>
         <input
@@ -71,6 +80,8 @@ useEffect(() => {
         {error && <p className="error">{error}</p>}
       </form>
     </div>
+</div>
+    
   );
 }
 
