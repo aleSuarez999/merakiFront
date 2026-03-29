@@ -10,9 +10,9 @@ const data2 = [
 ]
 
 
-//const COLORS = ["#427947ff", "#e0de55ff", "#b9473fff", "#CCC" ]
+const COLORS = ["#427947ff", "#e0de55ff", "#b9473fff", "#CCC" ]
 //const COLORS = ["#427947ff", "#b9473fff" ]
-const COLORS = ["#13a10eff", "#e00505dd", ]
+//const COLORS = ["#13a10eff", "#e00505dd", ]
 
 const OrgStatusChart = (
   {data}

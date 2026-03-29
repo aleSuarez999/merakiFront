@@ -1,38 +1,57 @@
-.network-container {
-  border: 1px solid #ccc;
-  margin: 10px;
-  padding: 15px;
-  border-radius: 6px;
-  background-color: #f9f9f9;
+@use "../abstracts/variables" as *;
 
-  h5 {
-    margin-bottom: 5px;
-    font-size: 1rem;
-    color: #333;
+.network-container {
+  border: 1px solid $color-border-subtle;
+  margin: 8px;
+  padding: 1rem;
+  border-radius: $radius-md;
+  background-color: $color-bg-card;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: $color-border-accent;
+    box-shadow: $shadow-elevated;
   }
 
-  .vlan_container{
+  h5 {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    font-family: $font-mono;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: $color-accent;
+  }
 
+  .vlan_container {
     ul {
-        list-style: none;
-        padding-left: 0;
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
 
-            li {
-            margin-bottom: 8px;
-            padding: 6px;
-            background-color: #fff;
-            border-left: 4px solid #ddd;
+      li {
+        margin-bottom: 6px;
+        padding: 0.4rem 0.6rem;
+        background-color: $color-bg-elevated;
+        border-left: 3px solid $color-border-subtle;
+        border-radius: 0 $radius-sm $radius-sm 0;
+        font-size: 0.78rem;
+        font-family: $font-mono;
+        color: $color-text;
+        transition: border-left-color 0.2s;
 
-                &.down {
-                    border-left-color: red;
-                    background-color: #ffe6e6;
-                }
-
-                &.active {
-                    border-left-color: green;
-                    background-color: #e6ffe6;
-                }
-            }
+        &.down {
+          border-left-color: $color-error;
+          background-color: $color-error-dim;
+          color: $color-error;
         }
+
+        &.active {
+          border-left-color: $color-success;
+          background-color: $color-success-dim;
+          color: $color-success;
+        }
+      }
     }
+  }
 }

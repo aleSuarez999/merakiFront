@@ -37,7 +37,7 @@ function DeviceStatusAutoUpdate( { org })
           value
         }
         ))
-      console.log(dataItems)
+      //console.log(dataItems)
       setCharData(dataItems)
 
       }, [deviceStatus])
@@ -56,12 +56,23 @@ function DeviceStatusAutoUpdate( { org })
               </Box>
               <Box className="w-100">
                 <ul className='deviceStatus d-flex '>
-                    <li  className='jcsb d-flex'><span>Online:</span> <span> {deviceStatus.online} </span></li>
+                    { deviceStatus.online > 0 && (
+                    <li  className='jcsb d-flex'><span>On:</span> <span> {deviceStatus.online} </span></li>
+                    )}
+                    { deviceStatus.alerting > 0 && (
+                      <li  className='jcsb d-flex'><span>Al:</span> <span>  {deviceStatus.alerting}</span></li>
+                    )}
+
                   { /* <li  className='jcsb d-flex'><span>Alert:</span> <span>  {deviceStatus.alerting}</span></li>
                     <li className='jcsb d-flex'><span>Dorm:</span><span>  {deviceStatus.dormant} </span></li> */}
                    { deviceStatus.offline > 0 && (
-                    <li  className={`jcsb d-flex ${deviceStatus.offline > 0 ? 'red-alert' : ''}`}><span>Offline:</span><span>  {deviceStatus.offline} </span></li>
+                    <li  className={`jcsb d-flex ${deviceStatus.offline > 0 ? 'red-alert' : ''}`}><span>Off:</span><span>  {deviceStatus.offline} </span></li>
                    )}
+
+                    { deviceStatus.dormant > 0 && (
+                      <li  className='jcsb d-flex'><span>Dor:</span> <span>  {deviceStatus.dormant}</span></li>
+                    )}
+
                 </ul>
               </Box>
             </>

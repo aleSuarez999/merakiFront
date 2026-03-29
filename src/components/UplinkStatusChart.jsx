@@ -12,7 +12,8 @@ const data2 = [
 
 //const COLORS = ["#427947ff", "#b9473fff" ]
 //const COLORS = ["#427947ff", "#FF0000" ]
-const COLORS = ["#13a10eff", "#e00505dd" ]
+//const COLORS = ["#13a10eff", "#e00505dd" ]
+const COLORS = ["#24c024ff",  "#e0de55ff","#CCC" , "#b9473fff"  ]
 const UplinkStatusChart = (
   {data}
 ) => {

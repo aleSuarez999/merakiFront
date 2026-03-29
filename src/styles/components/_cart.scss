@@ -1,43 +1,44 @@
 @use "sass:map";
 @use "sass:color";
 @use "../abstracts/variables" as *;
-.cart__container{
-    display: flex;
-    
-}
-.cart__badge{
-    position: relative;
-    display: flex;
-    padding: 0;
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8rem;
-    left: 36px;
-    top: -8px;
-    height: 22px;
-    width: 22px;
-    align-items: center;
-    justify-content: center;
-    text-align:center;
-    color:rgb(255, 255, 255);
-    background-color: rgb(216, 21, 7);
-    border-radius: 1rem;
 
-
-    
+.cart__container {
+  display: flex;
 }
 
-.cart-message{
-    color: $color-success;
-    .deleteItem{
-        color: $color-error;
-    }
+.cart__badge {
+  position: relative;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  font-family: $font-mono;
+  font-size: 0.68rem;
+  font-weight: 700;
+  left: 36px;
+  top: -8px;
+  height: 20px;
+  width: 20px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: $color-bg-deep;
+  background-color: $color-error;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
 }
 
-.oculto {
-    visibility: hidden;
+.cart-message {
+  color: $color-success;
+  font-size: 0.85rem;
+  font-family: $font-ui;
+
+  .deleteItem {
+    color: $color-error;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    &:hover { opacity: 0.75; }
+  }
 }
 
-.visible {
-    visibility:visible;
-}
+.oculto  { visibility: hidden; }
+.visible { visibility: visible; }

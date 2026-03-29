@@ -20,9 +20,7 @@ function UplinkStatus({ org }) {
 
   useEffect(() => {
     fetchUplinks(); // primera carga
-
     const interval = setInterval(fetchUplinks, 20000); // cada 20 segundos
-
     return () => clearInterval(interval); // limpieza al desmontar
   }, [org]);
 
@@ -36,12 +34,20 @@ function UplinkStatus({ org }) {
     setActiveUplinkCount(activeUplinkCount);
 
     const dataItems = [
-      { name: 'Uplinks', value: uplinkCount },
+      { name: 'Uplinks', value: activeUplinkCount },
       { name: 'Failed', value: uplinkCount - activeUplinkCount }
     ];
 
     setCharData(dataItems);
   }, [uplinkStatus1]);
+
+// ── Logica de alerta de ultimo uplink ─────────────────────────────────────
+  // Sitios con doble vinculo (uplinkCount >= 2) donde solo queda uno activo.
+  // Se evalua por red individual para no mezclar sitios distintos dentro de la org.
+  const sitiosEnRiesgo = uplinkStatus1.filter(
+    net => net.uplinkCount >= 2 && net.activeUplinkCount === 1
+  );
+  const hayAlertaUltimoUplink = sitiosEnRiesgo.length > 0;
 
   return (
     <>
@@ -53,17 +59,23 @@ function UplinkStatus({ org }) {
           <Box className="w-100">
             <ul className="orgStatus d-flex">
               <li className="jcsb d-flex">
-                <span>Uplinks:</span> <span>{uplinkCount}</span>
+                <span>W:{uplinkCount}</span>
               </li>
 
             { (uplinkCount - activeUplinkCount) > 0 && (
-              <li className={`jcsb d-flex ${(uplinkCount - activeUplinkCount) > 0 ? 'red-alert' : ''}`}>
-                <span>Failed:</span> <span>{uplinkCount - activeUplinkCount}</span>
+              <li className="jcsb d-flex red-alert">
+                <span>F:{uplinkCount - activeUplinkCount}</span>
               </li>
                    
                )}
 
- 
+           {/* Alerta: sitio con doble vinculo y solo uno activo */}
+              {hayAlertaUltimoUplink && (
+                <li className="jcsb d-flex uplink-last-warning">
+                  <span>⚠ Riesgo</span>
+                  <span>{sitiosEnRiesgo.length}</span>
+                </li>
+              )}
 
             </ul>
           </Box>

@@ -14,9 +14,10 @@ const data2 = [
 //const COLORS = ["#427947ff", "#e0de55ff", "rgb(255, 102, 0)", "#CCC" ]
 //const COLORS = ["#24c024ff", "#FF0000" ]
 //const COLORS = ["#427947ff", "#b9473fff"   ]
-//const COLORS = ["#13a10eff", "#e00505dd", "#71bf44FF", "#b9473fff"   ]
 
-const COLORS = ["#13a10eff", "#e00505dd", ]
+//const COLORS = ["#13a10eff", "#e00505dd", ]
+//const COLORS = ["#13a10eff",  "#e0de55ff","#CCC" , "#e00505dd"    ]
+const COLORS = ["#24c024ff",  "#e0de55ff","#CCC" , "#b9473fff"  ]
 
 
 const DeviceStatusChart = (

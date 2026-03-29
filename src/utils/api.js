@@ -77,7 +77,7 @@ export const getOrganizationDevicesStatusesOverview = async(orgId) => {
 
         const resp = await axiosInstance.get(`/organizations/${orgId}/devices/statuses/overview`)
 
-        //console.log("uplinkStatuses", resp.data.statuses)
+        //console.log("api.js uplinkStatuses", resp.data)
         if (resp.data.ok)
         {
             //return resp.data.statuses
@@ -87,8 +87,8 @@ export const getOrganizationDevicesStatusesOverview = async(orgId) => {
                     counts: {
                         byStatus:{
                             "online":online,
-                           // "alerting":alerting
-                          //  "dormant":0,
+                            "alerting":alerting, // aca se pueden eliminar datos
+                            "dormant":dormant,
                             "offline":offline
                         }
                     }
@@ -103,7 +103,7 @@ export const getOrganizationDevicesStatusesOverview = async(orgId) => {
                     counts: {
                         byStatus:{
                             "alerting":0,
-                          //  "dormant":0,
+                            "dormant":0,
                             "offline":0,
                             "online":0
                         }
@@ -118,7 +118,7 @@ export const getOrganizationDevicesStatusesOverview = async(orgId) => {
                     counts: {
                         byStatus:{
                             "alerting":0,
-                           // "dormant":0,
+                            "dormant":0,
                             "offline":0,
                             "online":0
                         }
@@ -151,6 +151,7 @@ export const getOrganizationApplianceUplinkStatusesAll = async (orgId) => {
     const resp = await axiosInstance.get(`/organizations/${orgId}/appliance/uplink/statusesAll`);
     const networks = Array.isArray(resp.data.networks) ? resp.data.networks : [];
    // console.log("REDES->", resp.data)
+   //console.log("api.js getOrganizationApplianceUplinkStatusesAll", resp.data)
     return {
       ok: true,
       networks
@@ -176,7 +177,7 @@ export const getOrganizationApplianceUplinkStatusesd = async(orgId) => {
      //   console.log("uplinkStatuses", orgId, networks)
     //    if (resp.data.ok)
         {
-            console.log("ok", resp.data.ok)
+           // console.log("ok", resp.data.ok)
              return {
                     ok: true,
                     networks
