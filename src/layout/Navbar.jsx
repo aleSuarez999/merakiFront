@@ -36,15 +36,22 @@ function Navbar() {
 
                 <NavLink to="/Devices" >Devices</NavLink>
                 <NavLink to="/Uplinks" >Uplinks</NavLink>
-                <NavLink to="/Reports" >Reports</NavLink>
-
-                
+                {/* Reports dropdown */}
+                <div className="navbar__dropdown">
+                  <button className="navbar__dropdown-trigger">
+                    Reports
+                    <span className="navbar__dropdown-arrow">▼</span>
+                  </button>
+                  <div className="navbar__dropdown-menu">
+                    <NavLink to="/reports/incidents">Inc Mgmnt</NavLink>
+                  </div>
+                </div>
 
                 <NavLink to="/Contacto" ></NavLink>
 
                 <NavLink>
                     <Box>
-                        <Text as="span" style={ {fontSize: '0.9rem', color: '#fff'}}    >
+                        <Text as="span" style={ {fontSize: '0.7rem', color: '#fff'}}    >
 
                             User: <strong>{username}</strong> | Rol: <strong>{role}</strong> 
                         </Text>

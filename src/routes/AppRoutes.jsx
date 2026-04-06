@@ -12,6 +12,7 @@ import NetworkVlans2 from '../pages/NetworkVlans2';
 import NetworkSsdis from '../pages/NetworkSsids';
 import { NetworkProvider } from '../context/networkContext';
 import PrivateRoute from './PrivateRoutes';
+import IncidentManagement from '../pages/IncidentManagement';
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
 const basename = isProduction ? '/help2/merakiApp' : '/';
 
@@ -34,7 +35,8 @@ function AppRoutes() {
 
 
             <Route path="/networks/:networkId/wireless/ssids" element={<NetworkProvider><NetworkSsdis /></NetworkProvider>} />
-          
+               <Route path="/reports/incidents" element={<PrivateRoute><IncidentManagement /></PrivateRoute>} />
+                    
 
         </Route>
       </Routes>

@@ -264,3 +264,17 @@ export const copySsids = async (ssids, targetNetworkId) => {
     }
   
 } 
+
+// GET /api/incidents/report?days=N
+export const getIncidentReport = async (days = 30) => {
+    try {
+        const resp = await axiosInstance.get(`/incidents/report?days=${days}`)
+        if (resp.data.ok) {
+            return resp.data
+        }
+        return null
+    } catch (error) {
+        console.error("getIncidentReport error:", error.message)
+        return null
+    }
+}
