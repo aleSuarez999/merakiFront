@@ -223,7 +223,7 @@ export const getNetworkSsids = async (networkId) => {
         const resp = await axiosInstance.get(`/networks/${networkId}/wireless/ssids`)
         if (resp.data.ok)
         {
-            //console.log("resp.data", resp.data)
+            console.log("resp.data", resp.data)
             return resp.data
         }
     }

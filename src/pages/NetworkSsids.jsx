@@ -24,8 +24,9 @@ export default function Networkssids() {
     console.log("networkId->", networkId)
     const fetchSsids = async () => {
       const res = await getNetworkSsids(networkId);
-      console.log("datassid", res.data)
-      setnetworkSsids(res.data);
+      console.log("datassid", res)
+      if (res)
+        setnetworkSsids(res.networks);
       setLoading(false);
     };
     fetchSsids();
@@ -40,7 +41,9 @@ export default function Networkssids() {
         // se mete en try porque sino tiene wireless activo da error
         const fetchSsids = async () => {
         const res = await getNetworkSsids(selectedNetwork);
-        setDstSsids(res.data);
+        //console.log("datassid2", res)
+        if (res)
+          setDstSsids(res.networks);
         setLoading(false);
         }
         fetchSsids();
@@ -158,12 +161,13 @@ export default function Networkssids() {
         </select>
       </div>
       {selectedNetwork && dstSsids.length > 0 && (
-        <div style={{ marginTop: '1rem', padding: '10px', border: '1px solid #ccc', background: '#f9f9f9' }}>
+        <div style={{ border: '1px solid #ccc', borderRadius: "1rem", padding: "1rem" }}>
           <h4>Resumen SSIDs de la red seleccionada:</h4>
           <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-            {dstSsids.map((ssid) => (
+            {dstSsids.map((ssid) => ( 
+              (ssid.enabled)&&
               <li key={ssid.name} style={{ marginBottom: '5px' }}>
-                {ssid.networkId} | <strong>Nro:</strong> {ssid.number} | <strong>Nombre:</strong> {ssid.name} | <strong>Vlan:</strong> {ssid.defaultVlanId}
+                {(ssid.enabled)?"Activo | ":""}  <strong>Nro:</strong> {ssid.number} | <strong>Nombre:</strong> {ssid.name} | <strong>Vlan:</strong> {ssid.defaultVlanId}
               </li>
             ))}
           </ul>

@@ -36,6 +36,10 @@ function Navbar() {
 
                 <NavLink to="/Devices" >Devices</NavLink>
                 <NavLink to="/Uplinks" >Uplinks</NavLink>
+                <NavLink to="/Reports" >Reports</NavLink>
+
+                
+
                 <NavLink to="/Contacto" ></NavLink>
 
                 <NavLink>
