@@ -1,0 +1,10 @@
+Options -MultiViews
+RewriteEngine On
+RewriteBase /help2/merakiApp/
+
+# Si el archivo o directorio existe físicamente, servilo directamente
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Todo lo demás va al index.html (React Router se encarga del ruteo)
+RewriteRule ^ index.html [QSA,L]
