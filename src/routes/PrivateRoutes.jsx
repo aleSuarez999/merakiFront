@@ -1,14 +1,11 @@
 import { Navigate } from "react-router-dom";
 
-const pathLogin = import.meta.env.VITE_PRODUCTION === 'true' 
-  ? '/help2/merakiApp/login' 
-  : '/login';
-
+// Siempre '/login' — React Router agrega el basename automáticamente
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('jwt_token');
 
   if (!token) {
-    return <Navigate to={pathLogin} replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
