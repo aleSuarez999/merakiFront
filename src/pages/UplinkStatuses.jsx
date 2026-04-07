@@ -38,7 +38,7 @@ export default function UplinkStatuses() {
 
     fetchUplinks();
     console.log("recargando")
-    const interval = setInterval(fetchUplinks, 20000);
+    const interval = setInterval(fetchUplinks, 180000);
     return () => clearInterval(interval);
 
   }, [orgId]);
