@@ -44,8 +44,11 @@ function Navbar() {
                   </button>
                   <div className="navbar__dropdown-menu">
                     <NavLink to="/reports/incidents">Inc Mgmnt</NavLink>
+                    <NavLink to="/reports/CUEstadisticas">CUEstadisticas</NavLink>
                   </div>
                 </div>
+
+
 
                 <NavLink to="/Contacto" ></NavLink>
 
