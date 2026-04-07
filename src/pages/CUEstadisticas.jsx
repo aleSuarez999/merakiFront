@@ -14,7 +14,7 @@ import {
   getCUAltasMensuales,
   getCUClientesAcumulados,
   getCUClientesLista,
-} from "../utils/api.cu";
+} from "../utils/api";
 
 // ─── Paleta (reutiliza las variables del proyecto) ────────────────────────────
 const PIE_COLORS = ["#3b82f6", "#8b5cf6", "#10b981", "#f59e0b", "#ec4899", "#06b6d4"];
