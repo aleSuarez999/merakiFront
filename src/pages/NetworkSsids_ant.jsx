@@ -3,23 +3,9 @@ import { useParams } from 'react-router';
 import { getNetworkSsids, getOrgsSinFiltro, getNetworksByOrg, copySsids } from '../utils/api';
 import Box from '../components/Box';
 import CardSsids from '../components/CardSsids';
-import { jwtDecode } from 'jwt-decode';
-
-// Obtiene el rol del JWT almacenado, igual que en Navbar.jsx
-function getRoleFromToken() {
-  try {
-    const token = localStorage.getItem('jwt_token');
-    if (!token) return '';
-    const decoded = jwtDecode(token);
-    return decoded.role || '';
-  } catch {
-    return '';
-  }
-}
 
 export default function Networkssids() {
   const [loading, setLoading] = useState(true);
-  const role = getRoleFromToken();
   const [networkSsids, setnetworkSsids] = useState([]);
   const [viewAsList, setViewAsList] = useState(false);
   const { networkId } = useParams();
@@ -188,9 +174,7 @@ export default function Networkssids() {
         </div>
       )}
 
-      {role === 'admin' && (
-        <button onClick={handleSendSelectedSsids}>Copiar SSIDs seleccionadas desde {networkId}</button>
-      )}
+      <button onClick={handleSendSelectedSsids}>Copiar SSIDs seleccionadas desde {networkId}</button>
 
       {/* Vista SSIDs actual */}
         {(
