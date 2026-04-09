@@ -276,29 +276,42 @@ function CUEstadisticas() {
           {/* Tabla hw */}
           <CUCard title="Resumen Hardware — Físicos vs Usuarios" fullWidth>
             <table className="cu-table">
+
+              {/* Encabezado */}
               <thead>
                 <tr>
-                  {["Tipo", "Físicos", "Usuarios"].map((h) => (
+                  {["Tipo", "Físicos", "Usuarios", "Clientes"].map((h) => (
                     <th key={h} className="cu-table__th">{h}</th>
                   ))}
                 </tr>
               </thead>
+
+              {/* Filas */}
               <tbody>
                 {(parque?.hwTable ?? []).map((row, i) => (
                   <tr key={i} className={i % 2 === 0 ? "cu-table__row" : "cu-table__row cu-table__row--alt"}>
                     <td className="cu-table__td">{row.tipo}</td>
                     <td className="cu-table__td cu-table__td--purple">{Number(row.fisicos).toLocaleString()}</td>
-                    <td className="cu-table__td cu-table__td--green">{Number(row.fisicos).toLocaleString()}</td>
+                    <td className="cu-table__td cu-table__td--green">{Number(row.usuarios).toLocaleString()}</td>
+                    <td className="cu-table__td cu-table__td--cyan">{Number(row.clientes).toLocaleString()}</td>
                   </tr>
                 ))}
                 {parque?.hwTable?.length > 0 && (
                   <tr className="cu-table__row cu-table__row--total">
                     <td className="cu-table__td cu-table__td--bold">Total</td>
-                    <td className="cu-table__td cu-table__td--bold cu-table__td--accent">{totalFisicos.toLocaleString()}</td>
-                    <td className="cu-table__td cu-table__td--bold cu-table__td--accent">{totalFisicos.toLocaleString()}</td>
+                    <td className="cu-table__td cu-table__td--bold cu-table__td--accent">
+                      {(parque.hwTable.reduce((s, r) => s + Number(r.fisicos), 0)).toLocaleString()}
+                    </td>
+                    <td className="cu-table__td cu-table__td--bold cu-table__td--accent">
+                      {(parque.hwTable.reduce((s, r) => s + Number(r.usuarios), 0)).toLocaleString()}
+                    </td>
+                    <td className="cu-table__td cu-table__td--bold cu-table__td--accent">
+                      {(parque.hwTable.reduce((s, r) => s + Number(r.clientes), 0)).toLocaleString()}
+                    </td>
                   </tr>
                 )}
               </tbody>
+
             </table>
           </CUCard>
         </div>
