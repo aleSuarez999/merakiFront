@@ -284,10 +284,23 @@ export const getIncidentReport = async (days = 30) => {
  * Foto actual del parque de dispositivos.
  * @param {string} [cliente] - Filtra por nombre o CUIT/serviceProvider
  */
-export const getCUParque = async ({ cliente } = {}) => {
+export const getCUParque_ant = async ({ cliente } = {}) => {
   try {
     const params = new URLSearchParams();
     if (cliente) params.append("cliente", cliente);
+    const resp = await axiosInstance.get(`/cu/parque?${params}`);
+    return resp.data.ok ? resp.data : null;
+  } catch (err) {
+    console.error("getCUParque error:", err.message);
+    return null;
+  }
+};
+
+export const getCUParque = async ({ serviceProvider, groupId } = {}) => {
+  try {
+    const params = new URLSearchParams();
+    if (serviceProvider) params.append("serviceProvider", serviceProvider);
+    if (groupId)         params.append("groupId", groupId);
     const resp = await axiosInstance.get(`/cu/parque?${params}`);
     return resp.data.ok ? resp.data : null;
   } catch (err) {
