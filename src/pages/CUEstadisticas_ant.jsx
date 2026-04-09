@@ -1,5 +1,8 @@
 // src/pages/CUEstadisticas.jsx
-import { useState, useEffect, useCallback, useRef } from "react";
+// ─── Integrado al layout del proyecto Meraki (sin aside propio) ────────────────
+// ─── Filtros: fecha desde/hasta + búsqueda por cliente (nombre o CUIT) ─────────
+
+import { useState, useEffect, useCallback } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer,
@@ -10,18 +13,20 @@ import {
   getCUAltasSemanales,
   getCUAltasMensuales,
   getCUClientesAcumulados,
-  getCUEmpresasLista,
-  getCUSucursalesLista,
+  getCUClientesLista,
 } from "../utils/api";
 
-const PIE_COLORS = ["#3b82f6", "#8b5cf6", "#10b981", "#f59e0b", "#ec4899", "#06b6d4", "#f97316", "#84cc16"];
+// ─── Paleta (reutiliza las variables del proyecto) ────────────────────────────
+const PIE_COLORS = ["#3b82f6", "#8b5cf6", "#10b981", "#f59e0b", "#ec4899", "#06b6d4"];
 
+// ─── Fecha default: último año ────────────────────────────────────────────────
 const hoy = new Date();
 const isoHoy = hoy.toISOString().split("T")[0];
 const hace1Anio = new Date(hoy);
 hace1Anio.setFullYear(hace1Anio.getFullYear() - 1);
 const isoAnio = hace1Anio.toISOString().split("T")[0];
 
+// ─── Tooltip personalizado ────────────────────────────────────────────────────
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
@@ -36,89 +41,19 @@ function CustomTooltip({ active, payload, label }) {
   );
 }
 
-// ─── Autocomplete genérico reutilizable ───────────────────────────────────────
-function AutocompleteInput({ label, placeholder, value, onChange, onSelect, onClear, sugerencias, renderItem, disabled }) {
-  const [open, setOpen] = useState(false);
-  const wrapperRef = useRef(null);
-
-  useEffect(() => {
-    const handler = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  useEffect(() => {
-    if (sugerencias.length > 0) setOpen(true);
-    else setOpen(false);
-  }, [sugerencias]);
-
-  return (
-    <div className="cu-filters__group cu-filters__group--autocomplete" ref={wrapperRef}>
-      <label className="cu-filters__label">{label}</label>
-      <div className="cu-autocomplete">
-        <div style={{ display: "flex", gap: 4 }}>
-          <input
-            type="text"
-            className="cu-filters__input"
-            placeholder={placeholder}
-            value={value}
-            disabled={disabled}
-            onChange={(e) => {
-              onChange(e.target.value);
-              if (!e.target.value) onClear();
-            }}
-          />
-          {value && (
-            <button
-              className="cu-btn cu-btn--secondary"
-              style={{ padding: "0 8px", fontSize: 12 }}
-              onMouseDown={(e) => { e.preventDefault(); onClear(); setOpen(false); }}
-              title="Limpiar"
-            >✕</button>
-          )}
-        </div>
-        {open && sugerencias.length > 0 && (
-          <ul className="cu-autocomplete__list">
-            {sugerencias.map((s, i) => (
-              <li
-                key={i}
-                className="cu-autocomplete__item"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  onSelect(s);
-                  setOpen(false);
-                }}
-              >
-                {renderItem(s)}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // ─── Componente principal ─────────────────────────────────────────────────────
 function CUEstadisticas() {
+  // ── Filtros ────────────────────────────────────────────────────────────────
   const [fechaDesde, setFechaDesde] = useState(isoAnio);
   const [fechaHasta, setFechaHasta] = useState(isoHoy);
+  const [clienteInput, setClienteInput] = useState("");
+  const [clienteSeleccionado, setClienteSeleccionado] = useState("");
+  const [sugerencias, setSugerencias] = useState([]);
 
-  // Empresa (serviceProvider)
-  const [empresaInput, setEmpresaInput]               = useState("");
-  const [empresaSeleccionada, setEmpresaSeleccionada] = useState("");
-  const [sugerenciasEmpresa, setSugerenciasEmpresa]   = useState([]);
+  // ── Tab activo ─────────────────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState("parque");
 
-  // Sucursal (groupId)
-  const [sucursalInput, setSucursalInput]               = useState("");
-  const [sucursalSeleccionada, setSucursalSeleccionada] = useState("");
-  const [sugerenciasSucursal, setSugerenciasSucursal]   = useState([]);
-
-  const [activeTab, setActiveTab]       = useState("parque");
+  // ── Datos ──────────────────────────────────────────────────────────────────
   const [parque, setParque]             = useState(null);
   const [altasDiarias, setAltasDiarias] = useState([]);
   const [altasSem, setAltasSem]         = useState([]);
@@ -126,17 +61,17 @@ function CUEstadisticas() {
   const [clientes, setClientes]         = useState([]);
   const [loading, setLoading]           = useState(false);
 
-  // ── Fetch ─────────────────────────────────────────────────────────────────
+  // ── Fetch principal ────────────────────────────────────────────────────────
+  const filters = {
+    fechaDesde,
+    fechaHasta,
+    cliente: clienteSeleccionado,
+  };
+
   const fetchAll = useCallback(async () => {
     setLoading(true);
-    const filters = {
-      fechaDesde,
-      fechaHasta,
-      ...(empresaSeleccionada  && { serviceProvider: empresaSeleccionada }),
-      ...(sucursalSeleccionada && { groupId: sucursalSeleccionada }),
-    };
     const [p, ad, as_, am, cl] = await Promise.all([
-      getCUParque(filters),
+      getCUParque({ cliente: clienteSeleccionado }),
       getCUAltasDiarias(filters),
       getCUAltasSemanales(filters),
       getCUAltasMensuales(filters),
@@ -148,32 +83,33 @@ function CUEstadisticas() {
     setAltasMen(am);
     setClientes(cl);
     setLoading(false);
-  }, [fechaDesde, fechaHasta, empresaSeleccionada, sucursalSeleccionada]);
+  }, [fechaDesde, fechaHasta, clienteSeleccionado]);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
-  // ── Autocomplete empresa ───────────────────────────────────────────────────
+  // ── Autocomplete cliente ───────────────────────────────────────────────────
   useEffect(() => {
-    if (!empresaInput || empresaInput.length < 2) { setSugerenciasEmpresa([]); return; }
+    if (!clienteInput || clienteInput.length < 2) {
+      setSugerencias([]);
+      return;
+    }
     const t = setTimeout(async () => {
-      setSugerenciasEmpresa(await getCUEmpresasLista(empresaInput));
+      const lista = await getCUClientesLista(clienteInput);
+      setSugerencias(lista);
     }, 300);
     return () => clearTimeout(t);
-  }, [empresaInput]);
+  }, [clienteInput]);
 
-  // ── Autocomplete sucursal (solo si hay empresa seleccionada) ──────────────
-  useEffect(() => {
-    if (!sucursalInput || sucursalInput.length < 2) { setSugerenciasSucursal([]); return; }
-    const t = setTimeout(async () => {
-      setSugerenciasSucursal(await getCUSucursalesLista(sucursalInput, empresaSeleccionada));
-    }, 300);
-    return () => clearTimeout(t);
-  }, [sucursalInput, empresaSeleccionada]);
+  const aplicarFiltros = () => {
+    setClienteSeleccionado(clienteInput);
+  };
 
   const limpiarFiltros = () => {
-    setFechaDesde(isoAnio); setFechaHasta(isoHoy);
-    setEmpresaInput(""); setEmpresaSeleccionada(""); setSugerenciasEmpresa([]);
-    setSucursalInput(""); setSucursalSeleccionada(""); setSugerenciasSucursal([]);
+    setFechaDesde(isoAnio);
+    setFechaHasta(isoHoy);
+    setClienteInput("");
+    setClienteSeleccionado("");
+    setSugerencias([]);
   };
 
   // ── KPIs ───────────────────────────────────────────────────────────────────
@@ -182,6 +118,7 @@ function CUEstadisticas() {
   const totalFisicos  = parque?.hwTable?.reduce((s, r) => s + Number(r.fisicos), 0) ?? 0;
   const totalClientes = clientes.length ? clientes.at(-1).cantidad_mes : 0;
 
+  // ─── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="cu-page">
       {/* ── Encabezado ───────────────────────────────────────────────────── */}
@@ -202,52 +139,62 @@ function CUEstadisticas() {
       <div className="cu-filters">
         <div className="cu-filters__group">
           <label className="cu-filters__label">Desde</label>
-          <input type="date" className="cu-filters__input" value={fechaDesde}
-            max={fechaHasta} onChange={(e) => setFechaDesde(e.target.value)} />
+          <input
+            type="date"
+            className="cu-filters__input"
+            value={fechaDesde}
+            max={fechaHasta}
+            onChange={(e) => setFechaDesde(e.target.value)}
+          />
         </div>
         <div className="cu-filters__group">
           <label className="cu-filters__label">Hasta</label>
-          <input type="date" className="cu-filters__input" value={fechaHasta}
-            min={fechaDesde} max={isoHoy} onChange={(e) => setFechaHasta(e.target.value)} />
+          <input
+            type="date"
+            className="cu-filters__input"
+            value={fechaHasta}
+            min={fechaDesde}
+            max={isoHoy}
+            onChange={(e) => setFechaHasta(e.target.value)}
+          />
         </div>
-
-        <AutocompleteInput
-          label="Empresa"
-          placeholder="Buscar por nombre o CUIT..."
-          value={empresaInput}
-          onChange={setEmpresaInput}
-          onSelect={(s) => {
-            setEmpresaInput(s.serviceProvider);
-            setEmpresaSeleccionada(s.serviceProvider);
-            setSucursalInput(""); setSucursalSeleccionada("");
-          }}
-          onClear={() => {
-            setEmpresaInput(""); setEmpresaSeleccionada("");
-            setSucursalInput(""); setSucursalSeleccionada("");
-          }}
-          sugerencias={sugerenciasEmpresa}
-          renderItem={(s) => <span>{s.serviceProvider}</span>}
-        />
-
-        <AutocompleteInput
-          label="Sucursal"
-          placeholder={empresaSeleccionada ? "Buscar sucursal..." : "Seleccioná empresa primero"}
-          value={sucursalInput}
-          onChange={setSucursalInput}
-          onSelect={(s) => { setSucursalInput(s.groupId); setSucursalSeleccionada(s.groupId); }}
-          onClear={() => { setSucursalInput(""); setSucursalSeleccionada(""); }}
-          sugerencias={sugerenciasSucursal}
-          disabled={!empresaSeleccionada}
-          renderItem={(s) => (
-            <span>
-              <strong>{s.groupId}</strong>
-              <span className="cu-autocomplete__sp"> · {s.serviceProvider}</span>
-            </span>
-          )}
-        />
-
+        <div className="cu-filters__group cu-filters__group--autocomplete">
+          <label className="cu-filters__label">Cliente (nombre o CUIT)</label>
+          <div className="cu-autocomplete">
+            <input
+              type="text"
+              className="cu-filters__input"
+              placeholder="Buscar cliente..."
+              value={clienteInput}
+              onChange={(e) => {
+                setClienteInput(e.target.value);
+                if (!e.target.value) setClienteSeleccionado("");
+              }}
+            />
+            {sugerencias.length > 0 && (
+              <ul className="cu-autocomplete__list">
+                {sugerencias.map((s, i) => (
+                  <li
+                    key={i}
+                    className="cu-autocomplete__item"
+                    onClick={() => {
+                      setClienteInput(s.groupId);
+                      setClienteSeleccionado(s.groupId);
+                      setSugerencias([]);
+                    }}
+                  >
+                    <strong>{s.groupId}</strong>
+                    {s.serviceProvider && (
+                      <span className="cu-autocomplete__sp"> · {s.serviceProvider}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
         <div className="cu-filters__actions">
-          <button className="cu-btn cu-btn--primary" onClick={fetchAll} disabled={loading}>
+          <button className="cu-btn cu-btn--primary" onClick={aplicarFiltros} disabled={loading}>
             {loading ? "Cargando…" : "Aplicar"}
           </button>
           <button className="cu-btn cu-btn--secondary" onClick={limpiarFiltros}>
@@ -271,9 +218,11 @@ function CUEstadisticas() {
           { id: "altas",    label: "Altas" },
           { id: "clientes", label: "Clientes" },
         ].map((t) => (
-          <button key={t.id}
+          <button
+            key={t.id}
             className={`cu-tab ${activeTab === t.id ? "cu-tab--active" : ""}`}
-            onClick={() => setActiveTab(t.id)}>
+            onClick={() => setActiveTab(t.id)}
+          >
             {t.label}
           </button>
         ))}
@@ -284,11 +233,16 @@ function CUEstadisticas() {
       {/* ══ TAB: PARQUE ═══════════════════════════════════════════════════ */}
       {!loading && activeTab === "parque" && (
         <div className="cu-grid cu-grid--2col">
+          {/* Pie usuarios por dispositivo */}
           <CUCard title="Usuarios por Dispositivo">
             <ResponsiveContainer width="100%" height={260}>
               <PieChart>
-                <Pie data={parque?.porDispositivo ?? []} cx="50%" cy="50%"
-                  innerRadius={55} outerRadius={100} paddingAngle={3} dataKey="value">
+                <Pie
+                  data={parque?.porDispositivo ?? []}
+                  cx="50%" cy="50%"
+                  innerRadius={55} outerRadius={100}
+                  paddingAngle={3} dataKey="value"
+                >
                   {(parque?.porDispositivo ?? []).map((_, i) => (
                     <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                   ))}
@@ -299,11 +253,16 @@ function CUEstadisticas() {
             </ResponsiveContainer>
           </CUCard>
 
+          {/* Pie físicos */}
           <CUCard title="Dispositivos Físicos">
             <ResponsiveContainer width="100%" height={260}>
               <PieChart>
-                <Pie data={parque?.hwTable ?? []} cx="50%" cy="50%"
-                  innerRadius={55} outerRadius={100} paddingAngle={3} dataKey="fisicos" nameKey="tipo">
+                <Pie
+                  data={parque?.hwTable ?? []}
+                  cx="50%" cy="50%"
+                  innerRadius={55} outerRadius={100}
+                  paddingAngle={3} dataKey="fisicos" nameKey="tipo"
+                >
                   {(parque?.hwTable ?? []).map((_, i) => (
                     <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                   ))}
@@ -314,8 +273,11 @@ function CUEstadisticas() {
             </ResponsiveContainer>
           </CUCard>
 
+          {/* Tabla hw */}
           <CUCard title="Resumen Hardware — Físicos vs Usuarios" fullWidth>
             <table className="cu-table">
+
+              {/* Encabezado */}
               <thead>
                 <tr>
                   {["Tipo", "Físicos", "Usuarios", "Clientes"].map((h) => (
@@ -323,6 +285,8 @@ function CUEstadisticas() {
                   ))}
                 </tr>
               </thead>
+
+              {/* Filas */}
               <tbody>
                 {(parque?.hwTable ?? []).map((row, i) => (
                   <tr key={i} className={i % 2 === 0 ? "cu-table__row" : "cu-table__row cu-table__row--alt"}>
@@ -336,17 +300,18 @@ function CUEstadisticas() {
                   <tr className="cu-table__row cu-table__row--total">
                     <td className="cu-table__td cu-table__td--bold">Total</td>
                     <td className="cu-table__td cu-table__td--bold cu-table__td--accent">
-                      {parque.hwTable.reduce((s, r) => s + Number(r.fisicos), 0).toLocaleString()}
+                      {(parque.hwTable.reduce((s, r) => s + Number(r.fisicos), 0)).toLocaleString()}
                     </td>
                     <td className="cu-table__td cu-table__td--bold cu-table__td--accent">
-                      {parque.hwTable.reduce((s, r) => s + Number(r.usuarios), 0).toLocaleString()}
+                      {(parque.hwTable.reduce((s, r) => s + Number(r.usuarios), 0)).toLocaleString()}
                     </td>
                     <td className="cu-table__td cu-table__td--bold cu-table__td--accent">
-                      {(parque.totalClientesFisicos ?? parque.hwTable.reduce((s, r) => s + Number(r.clientes), 0)).toLocaleString()}
+                      {(parque.hwTable.reduce((s, r) => s + Number(r.clientes), 0)).toLocaleString()}
                     </td>
                   </tr>
                 )}
               </tbody>
+
             </table>
           </CUCard>
         </div>
@@ -402,13 +367,22 @@ function CUEstadisticas() {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border, #252d45)" />
                 <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v) => [v.toLocaleString(), "Clientes"]} contentStyle={{ borderRadius: 8 }} />
-                <Line type="monotone" dataKey="cantidad_mes" stroke="#06b6d4" strokeWidth={2.5}
-                  dot={{ fill: "#06b6d4", r: 4 }} activeDot={{ r: 6 }} name="Clientes" />
+                <Tooltip
+                  formatter={(v) => [v.toLocaleString(), "Clientes"]}
+                  contentStyle={{ borderRadius: 8 }}
+                />
+                <Line
+                  type="monotone" dataKey="cantidad_mes"
+                  stroke="#06b6d4" strokeWidth={2.5}
+                  dot={{ fill: "#06b6d4", r: 4 }}
+                  activeDot={{ r: 6 }}
+                  name="Clientes"
+                />
               </LineChart>
             </ResponsiveContainer>
           </CUCard>
 
+          {/* Detalle mensual */}
           <CUCard title="Detalle Mensual">
             <table className="cu-table">
               <thead>
@@ -444,6 +418,8 @@ function CUEstadisticas() {
     </div>
   );
 }
+
+// ─── Sub-componentes ──────────────────────────────────────────────────────────
 
 function KPICard({ label, value, color }) {
   return (

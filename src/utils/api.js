@@ -378,3 +378,19 @@ function buildCUParams({ fechaDesde, fechaHasta, cliente } = {}) {
   if (cliente)    p.append("cliente", cliente);
   return p;
 }
+
+export const getCUEmpresasLista = async (q = "") => {
+  try {
+    const resp = await axiosInstance.get(`/cu/empresas/lista?q=${encodeURIComponent(q)}`);
+    return resp.data.ok ? resp.data.data : [];
+  } catch (err) { return []; }
+};
+
+export const getCUSucursalesLista = async (q = "", empresa = "") => {
+  try {
+    const resp = await axiosInstance.get(
+      `/cu/sucursales/lista?q=${encodeURIComponent(q)}&empresa=${encodeURIComponent(empresa)}`
+    );
+    return resp.data.ok ? resp.data.data : [];
+  } catch (err) { return []; }
+};
