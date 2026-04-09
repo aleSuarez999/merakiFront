@@ -384,11 +384,12 @@ export const getCUClientesLista = async (q = "") => {
 };
 
 /** Util: construye URLSearchParams para filtros CU */
-function buildCUParams({ fechaDesde, fechaHasta, cliente } = {}) {
+function buildCUParams({ fechaDesde, fechaHasta, serviceProvider, groupId } = {}) {
   const p = new URLSearchParams();
-  if (fechaDesde) p.append("fechaDesde", fechaDesde);
-  if (fechaHasta) p.append("fechaHasta", fechaHasta);
-  if (cliente)    p.append("cliente", cliente);
+  if (fechaDesde)      p.append("fechaDesde", fechaDesde);
+  if (fechaHasta)      p.append("fechaHasta", fechaHasta);
+  if (serviceProvider) p.append("serviceProvider", serviceProvider);
+  if (groupId)         p.append("groupId", groupId);
   return p;
 }
 
