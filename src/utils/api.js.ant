@@ -265,6 +265,19 @@ export const copySsids = async (ssids, targetNetworkId) => {
   
 } 
 
+// GET /api/incidents/report?days=N
+export const getIncidentReport = async (days = 30) => {
+    try {
+        const resp = await axiosInstance.get(`/incidents/report?days=${days}`)
+        if (resp.data.ok) {
+            return resp.data
+        }
+        return null
+    } catch (error) {
+        console.error("getIncidentReport error:", error.message)
+        return null
+    }
+}
 
 /**
  * GET /api/cu/parque
@@ -395,51 +408,3 @@ export const getCUSucursalesLista = async (q = "", empresa = "") => {
     return resp.data.ok ? resp.data.data : [];
   } catch (err) { return []; }
 };
-
-// GET /api/incidents/orgs → lista orgs con filtro del dashboard
-export const getIncidentOrgs = async () => {
-    try {
-        const resp = await axiosInstance.get('/incidents/orgs')
-        return resp.data.ok ? resp.data.orgs : []
-    } catch (error) {
-        console.error('getIncidentOrgs error:', error.message)
-        return []
-    }
-}
-
-// GET /api/incidents/report?orgId=X&days=N
-export const getIncidentReport = async (orgId = null, days = 30) => {
-    try {
-        const params = new URLSearchParams({ days })
-        if (orgId) params.append('orgId', orgId)
-        const resp = await axiosInstance.get(`/incidents/report?${params}`)
-        return resp.data.ok ? resp.data : null
-    } catch (error) {
-        console.error('getIncidentReport error:', error.message)
-        return null
-    }
-}
-
-// PATCH /api/incidents/:id/status
-export const updateIncidentWorkStatus = async (id, { workStatus, claimNumber }) => {
-    try {
-        const resp = await axiosInstance.patch(`/incidents/${id}/status`, { workStatus, claimNumber })
-        return resp.data.ok ? resp.data.incident : null
-    } catch (error) {
-        console.error('updateIncidentWorkStatus error:', error.message)
-        return null
-    }
-}
-
-// GET /api/incidents/resolved-report?orgId=X&days=N
-export const getResolvedIncidentsReport = async (orgId = null, days = 30) => {
-    try {
-        const params = new URLSearchParams({ days })
-        if (orgId) params.append('orgId', orgId)
-        const resp = await axiosInstance.get(`/incidents/resolved-report?${params}`)
-        return resp.data.ok ? resp.data : null
-    } catch (error) {
-        console.error('getResolvedIncidentsReport error:', error.message)
-        return null
-    }
-}

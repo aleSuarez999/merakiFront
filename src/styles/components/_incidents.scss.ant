@@ -40,48 +40,6 @@
   margin: 0;
 }
 
-// ── Controls (org + period agrupados) ─────────────────────────────────────────
-.inc__controls {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  align-items: flex-end;
-
-  @media (max-width: 640px) {
-    align-items: flex-start;
-  }
-}
-
-// ── Org selector ──────────────────────────────────────────────────────────────
-.inc__org-selector {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.inc__org-select {
-  background: $color-bg-elevated;
-  border: 1px solid $color-border-accent;
-  border-radius: $radius-sm;
-  color: $color-accent;
-  font-family: $font-mono;
-  font-size: 0.78rem;
-  padding: 0.3rem 0.8rem;
-  cursor: pointer;
-  min-width: 200px;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
-
-  &:focus {
-    outline: none;
-    box-shadow: $shadow-glow-accent;
-  }
-
-  option {
-    background: $color-bg-surface;
-    color: $color-text;
-  }
-}
-
 // ── Period selector ───────────────────────────────────────────────────────────
 .inc__period-selector {
   display: flex;
@@ -91,10 +49,11 @@
 }
 
 .inc__period-label {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: $color-text-muted;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  margin-right: 0.2rem;
 }
 
 .inc__period-btn {
@@ -103,8 +62,8 @@
   border-radius: $radius-sm;
   color: $color-text-muted;
   font-family: $font-mono;
-  font-size: 0.72rem;
-  padding: 0.22rem 0.65rem;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.7rem;
   cursor: pointer;
   transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 
@@ -142,7 +101,9 @@
   animation: inc-spin 0.7s linear infinite;
 }
 
-@keyframes inc-spin { to { transform: rotate(360deg); } }
+@keyframes inc-spin {
+  to { transform: rotate(360deg); }
+}
 
 .inc__error {
   color: $color-error;
@@ -173,8 +134,8 @@
   border: 1px solid $color-border-subtle;
   border-radius: $radius-md;
   padding: 0.9rem 1.25rem;
-  min-width: 130px;
-  flex: 1 1 130px;
+  min-width: 140px;
+  flex: 1 1 140px;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -188,12 +149,13 @@
   &--accent {
     border-color: $color-border-accent;
     background: $color-bg-elevated;
+
     .inc__kpi-value { color: $color-accent; }
   }
 }
 
 .inc__kpi-label {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-family: $font-mono;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -201,7 +163,7 @@
 }
 
 .inc__kpi-value {
-  font-size: 1.85rem;
+  font-size: 1.9rem;
   font-family: $font-mono;
   font-weight: 700;
   color: $color-text;
@@ -209,13 +171,13 @@
 }
 
 .inc__kpi-unit {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 400;
   color: $color-text-muted;
 }
 
 .inc__kpi-sub {
-  font-size: 0.63rem;
+  font-size: 0.65rem;
   color: $color-text-muted;
 }
 
@@ -225,24 +187,25 @@
   border: 2px solid;
   border-radius: $radius-md;
   padding: 0.9rem 1.25rem;
-  min-width: 150px;
-  flex: 1 1 150px;
+  min-width: 160px;
+  flex: 1 1 160px;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
   transition: box-shadow 0.2s ease;
+
   &:hover { box-shadow: $shadow-elevated; }
 }
 
 .inc__avail-value {
   font-family: $font-mono;
-  font-size: 1.85rem;
+  font-size: 1.9rem;
   font-weight: 700;
   line-height: 1.1;
 }
 
 .inc__avail-label {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-family: $font-mono;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -276,51 +239,20 @@
     box-shadow: $shadow-elevated;
   }
 
-  &--wide { flex: 2 1 420px; }
-}
-
-// ── Tabs ──────────────────────────────────────────────────────────────────────
-.inc__tabs {
-  display: flex;
-  gap: 0;
-  margin-bottom: 0;
-  border-bottom: 1px solid $color-border-subtle;
-  margin-top: 0.5rem;
-}
-
-.inc__tab {
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: $color-text-muted;
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  padding: 0.6rem 1.2rem;
-  cursor: pointer;
-  transition: color 0.18s ease, border-color 0.18s ease;
-  display: flex;
-  align-items: center;
-  margin-bottom: -1px;
-
-  &:hover { color: $color-accent; }
-
-  &--active {
-    color: $color-accent;
-    border-bottom-color: $color-accent;
+  &--wide {
+    flex: 2 1 420px;
   }
 }
 
-// ── Panel genérico ────────────────────────────────────────────────────────────
+// ── Panel genérico (tabla) ────────────────────────────────────────────────────
 .inc__panel {
   background: $color-bg-card;
   border: 1px solid $color-border-subtle;
-  border-radius: 0 $radius-md $radius-md $radius-md;
+  border-radius: $radius-md;
   padding: 1rem 1.1rem;
   margin-bottom: 1rem;
   transition: border-color 0.2s ease;
+
   &:hover { border-color: $color-border-accent; }
 }
 
@@ -331,20 +263,13 @@
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: $color-text-header;
-  margin: 0 0 0.6rem 0;
+  margin: 0 0 0.75rem 0;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.inc__table-hint {
-  font-size: 0.72rem;
-  color: $color-text-muted;
-  margin: 0 0 0.75rem 0;
-  line-height: 1.5;
-}
-
-// ── Tabla ─────────────────────────────────────────────────────────────────────
+// ── Table ─────────────────────────────────────────────────────────────────────
 .inc__table-wrap {
   overflow-x: auto;
 }
@@ -357,25 +282,28 @@
   th {
     text-align: left;
     font-family: $font-mono;
-    font-size: 0.63rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: $color-text-muted;
-    padding: 0.4rem 0.65rem;
+    padding: 0.4rem 0.75rem;
     border-bottom: 1px solid $color-border-subtle;
-    white-space: nowrap;
   }
 
   td {
-    padding: 0.4rem 0.65rem;
+    padding: 0.45rem 0.75rem;
     color: $color-text;
     border-bottom: 1px solid $color-border-subtle;
     vertical-align: middle;
+
+    &:last-child { border-right: none; }
   }
 
   tr:last-child td { border-bottom: none; }
 
-  tr:hover td { background: $color-bg-elevated; }
+  tr:hover td {
+    background: $color-bg-elevated;
+  }
 }
 
 .inc__td-mono {
@@ -384,84 +312,11 @@
   color: $color-text-muted;
 }
 
-// ── Work Status select ────────────────────────────────────────────────────────
-.inc__ws-select {
-  font-family: $font-mono;
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.2rem 0.5rem;
-  border-radius: $radius-sm;
-  border: 1px solid;
-  cursor: pointer;
-  transition: box-shadow 0.15s ease;
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.25);
-  }
-
-  option {
-    background: $color-bg-surface;
-    color: $color-text;
-    font-weight: 400;
-  }
-}
-
-// ── Claim number input ────────────────────────────────────────────────────────
-.inc__claim-input {
-  background: $color-bg-elevated;
-  border: 1px solid $color-border-subtle;
-  border-radius: $radius-sm;
-  color: $color-text;
-  font-family: $font-mono;
-  font-size: 0.72rem;
-  padding: 0.2rem 0.5rem;
-  width: 110px;
-  transition: border-color 0.15s ease;
-
-  &::placeholder { color: $color-text-muted; }
-
-  &:focus {
-    outline: none;
-    border-color: $color-border-accent;
-  }
-}
-
-// ── Save button ───────────────────────────────────────────────────────────────
-.inc__save-btn {
-  background: $color-bg-elevated;
-  border: 1px solid $color-border-subtle;
-  border-radius: $radius-sm;
-  color: $color-text-muted;
-  font-size: 0.8rem;
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:disabled { opacity: 0.35; cursor: default; }
-
-  &--dirty {
-    background: $color-success-dim;
-    border-color: $color-success;
-    color: $color-success;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
-
-    &:hover:not(:disabled) {
-      background: $color-success;
-      color: $color-bg-deep;
-    }
-  }
-}
-
 // ── Badges ────────────────────────────────────────────────────────────────────
 .inc__badge {
   display: inline-block;
   font-family: $font-mono;
-  font-size: 0.63rem;
+  font-size: 0.65rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -478,8 +333,8 @@
     background: $color-secondary-dim;
     color: $color-secondary;
     border: 1px solid rgba(59, 130, 246, 0.3);
-    font-size: 0.68rem;
-    padding: 0.1rem 0.5rem;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.55rem;
   }
 }
 
@@ -492,19 +347,20 @@
   font-size: 0.78rem;
   font-family: $font-ui;
   color: $color-text;
+
   p { margin: 0.1rem 0; }
 }
 
 .inc__tooltip-label {
   font-family: $font-mono;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   color: $color-text-muted;
   margin-bottom: 0.25rem !important;
 }
 
 // ── Footer note ───────────────────────────────────────────────────────────────
 .inc__footer-note {
-  font-size: 0.66rem;
+  font-size: 0.68rem;
   color: $color-text-muted;
   font-family: $font-mono;
   text-align: right;
@@ -513,7 +369,7 @@
   border-top: 1px solid $color-border-subtle;
 }
 
-// ── Dropdown Reports navbar ───────────────────────────────────────────────────
+// ── Dropdown Reports en navbar ────────────────────────────────────────────────
 .navbar__dropdown {
   position: relative;
   display: inline-flex;
