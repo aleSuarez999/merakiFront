@@ -421,9 +421,9 @@ export const getIncidentReport = async (orgId = null, days = 30) => {
 }
 
 // PATCH /api/incidents/:id/status
-export const updateIncidentWorkStatus = async (id, { workStatus, claimNumber }) => {
+export const updateIncidentWorkStatus = async (id, { workStatus, claimNumber, resolutionNotes }) => {
     try {
-        const resp = await axiosInstance.patch(`/incidents/${id}/status`, { workStatus, claimNumber })
+        const resp = await axiosInstance.patch(`/incidents/${id}/status`, { workStatus, claimNumber, resolutionNotes })
         return resp.data.ok ? resp.data.incident : null
     } catch (error) {
         console.error('updateIncidentWorkStatus error:', error.message)
