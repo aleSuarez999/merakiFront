@@ -28,14 +28,19 @@ const SEVERITY_COLORS = {
 }
 
 const WORK_STATUS_CFG = {
-  active:      { label: 'Active',      color: COLOR_ERROR,     bg: 'rgba(239,68,68,0.10)'  },
-  in_progress: { label: 'In Progress', color: COLOR_WARNING,   bg: 'rgba(245,158,11,0.12)' },
-  resolved:    { label: 'Resolved',    color: COLOR_SUCCESS,   bg: 'rgba(16,185,129,0.10)' },
+  active:      { label: 'Active',      color: COLOR_ERROR,   bg: 'rgba(239,68,68,0.10)'  },
+  in_progress: { label: 'In Progress', color: COLOR_WARNING, bg: 'rgba(245,158,11,0.12)' },
+  resolved:    { label: 'Resolved',    color: COLOR_SUCCESS, bg: 'rgba(16,185,129,0.10)' },
 }
 
-const TYPE_COLORS  = [COLOR_ACCENT, COLOR_SECONDARY, COLOR_SUCCESS, COLOR_WARNING, COLOR_ERROR, '#8b5cf6', '#ec4899']
-const PERIOD_OPTIONS = [7, 14, 30, 60, 90]
-const LS_ORG_KEY     = 'inc_mgmnt_last_org'
+const TYPE_COLORS        = [COLOR_ACCENT, COLOR_SECONDARY, COLOR_SUCCESS, COLOR_WARNING, COLOR_ERROR, '#8b5cf6', '#ec4899']
+const PERIOD_OPTIONS     = [7, 14, 30, 60, 90]
+const HISTORY_PERIOD_OPTIONS = [
+  { value: 7,  label: '1 semana'  },
+  { value: 14, label: '2 semanas' },
+  { value: 30, label: '1 mes'     },
+]
+const LS_ORG_KEY = 'inc_mgmnt_last_org'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const fmtDate = d => new Date(d).toLocaleString('en-GB', {
@@ -93,14 +98,14 @@ function ChartTooltip({ active, payload, label }) {
   )
 }
 
-// ── Fila editable de incidente abierto ────────────────────────────────────────
+// ── Fila editable — Open Incidents tab ───────────────────────────────────────
 function OpenIncidentRow({ inc, onSave }) {
-  const [ws, setWs]          = useState(inc.workStatus || 'active')
-  const [claim, setClaim]    = useState(inc.claimNumber || '')
-  const [saving, setSaving]  = useState(false)
-  const [dirty, setDirty]    = useState(false)
+  const [ws, setWs]       = useState(inc.workStatus || 'active')
+  const [claim, setClaim] = useState(inc.claimNumber || '')
+  const [saving, setSaving] = useState(false)
+  const [dirty, setDirty]   = useState(false)
 
-  const handleWsChange = v => { setWs(v); setDirty(true) }
+  const handleWsChange    = v => { setWs(v);    setDirty(true) }
   const handleClaimChange = v => { setClaim(v); setDirty(true) }
 
   const handleSave = async () => {
@@ -110,17 +115,14 @@ function OpenIncidentRow({ inc, onSave }) {
     setDirty(false)
   }
 
-  const cfg = WORK_STATUS_CFG[ws] || WORK_STATUS_CFG.active
+  const cfg      = WORK_STATUS_CFG[ws] || WORK_STATUS_CFG.active
   const rowStyle = ws === 'in_progress'
     ? { background: 'rgba(245,158,11,0.07)', borderLeft: `3px solid ${COLOR_WARNING}` }
     : {}
 
   return (
     <tr style={rowStyle}>
-      {/* Tipo */}
       <td><span className="inc__badge inc__badge--type">{inc.incidentType}</span></td>
-
-      {/* Severidad */}
       <td>
         <span className="inc__badge" style={{
           background: (SEVERITY_COLORS[inc.severity] || COLOR_MUTED) + '22',
@@ -130,17 +132,9 @@ function OpenIncidentRow({ inc, onSave }) {
           {inc.severity}
         </span>
       </td>
-
-      {/* Red (nombre) */}
       <td className="inc__td-mono">{inc.networkName || inc.networkId || '—'}</td>
-
-      {/* Device */}
       <td className="inc__td-mono">{inc.deviceSerial || '—'}</td>
-
-      {/* Detectado */}
       <td className="inc__td-mono">{fmtDate(inc.detectedAt)}</td>
-
-      {/* Work Status selector */}
       <td>
         <select
           className="inc__ws-select"
@@ -153,8 +147,6 @@ function OpenIncidentRow({ inc, onSave }) {
           <option value="resolved">Resolved</option>
         </select>
       </td>
-
-      {/* Claim Number */}
       <td>
         <input
           className="inc__claim-input"
@@ -164,8 +156,6 @@ function OpenIncidentRow({ inc, onSave }) {
           onChange={e => handleClaimChange(e.target.value)}
         />
       </td>
-
-      {/* Guardar */}
       <td>
         <button
           className={`inc__save-btn${dirty ? ' inc__save-btn--dirty' : ''}`}
@@ -180,113 +170,199 @@ function OpenIncidentRow({ inc, onSave }) {
   )
 }
 
-// ── Tabla incidentes abiertos ─────────────────────────────────────────────────
+// ── Tabla Open Incidents ──────────────────────────────────────────────────────
 function OpenIncidentsTable({ rows, onSave }) {
   if (!rows || rows.length === 0)
     return <p className="inc__empty">No open incidents for this organization</p>
-
   return (
     <div className="inc__table-wrap">
       <table className="inc__table">
         <thead>
           <tr>
-            <th>Type</th>
-            <th>Severity</th>
-            <th>Network</th>
-            <th>Device</th>
-            <th>Detected</th>
-            <th>Status</th>
-            <th>Claim #</th>
-            <th></th>
+            <th>Type</th><th>Severity</th><th>Network</th><th>Device</th>
+            <th>Detected</th><th>Status</th><th>Claim #</th><th></th>
           </tr>
         </thead>
         <tbody>
-          {rows.map(r => (
-            <OpenIncidentRow key={r._id} inc={r} onSave={onSave} />
-          ))}
+          {rows.map(r => <OpenIncidentRow key={r._id} inc={r} onSave={onSave} />)}
         </tbody>
       </table>
     </div>
   )
 }
 
-// ── Tabla reporte resueltos ───────────────────────────────────────────────────
-function ResolvedReportTable({ data }) {
-  if (!data) return null
-  const { summary, incidents } = data
+// ── Fila editable — History tab ───────────────────────────────────────────────
+function HistoryIncidentRow({ inc, onSave }) {
+  const [claim, setClaim]   = useState(inc.claimNumber || '')
+  const [notes, setNotes]   = useState(inc.resolutionNotes || '')
+  const [saving, setSaving] = useState(false)
+  const [dirty, setDirty]   = useState(false)
+  const [expanded, setExpanded] = useState(false)   // despliega inputs inline
+
+  const handleSave = async () => {
+    setSaving(true)
+    await onSave(inc._id, { claimNumber: claim, resolutionNotes: notes })
+    setSaving(false)
+    setDirty(false)
+    setExpanded(false)
+  }
+
+  const wsCfg    = WORK_STATUS_CFG[inc.workStatus] || WORK_STATUS_CFG.active
+  const isOpen   = inc.status === 'open'
+  const resolvedTs = inc.manualResolvedAt || inc.resolvedAt
+  const rowStyle = isOpen
+    ? { borderLeft: `3px solid ${wsCfg.color}` }
+    : { opacity: 0.82 }
 
   return (
-    <div className="inc__panel">
-      <Text as="h3" className="inc__panel-title">
-        Resolved Incidents Report
-        <span className="inc__badge inc__badge--count">{summary.total}</span>
-      </Text>
+    <>
+      <tr style={rowStyle}>
+        {/* Estado */}
+        <td>
+          <span className="inc__badge" style={{
+            background: wsCfg.bg,
+            color: wsCfg.color,
+            border: `1px solid ${wsCfg.color}55`
+          }}>
+            {isOpen ? wsCfg.label : 'Resolved'}
+          </span>
+        </td>
 
-      {/* Métricas agregadas */}
-      <div className="inc__kpi-row" style={{ marginBottom: '1rem' }}>
-        <KpiCard label="Total Resolved"      value={summary.total} accent />
-        <KpiCard label="Total Downtime"      value={summary.totalDowntimeHuman} />
-        <KpiCard label="Avg Downtime"        value={summary.avgDowntimeHuman}   sub="per incident" />
-        <KpiCard label="Max Downtime"        value={summary.maxDowntimeHuman}   sub="single incident" />
-      </div>
+        {/* Tipo */}
+        <td><span className="inc__badge inc__badge--type">{inc.incidentType}</span></td>
 
-      {incidents.length === 0
-        ? <p className="inc__empty">No resolved incidents in this period</p>
-        : (
-          <div className="inc__table-wrap">
-            <table className="inc__table">
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Network</th>
-                  <th>Device</th>
-                  <th>Detected</th>
-                  <th>Resolved (manual)</th>
-                  <th>Downtime</th>
-                  <th>Claim #</th>
-                </tr>
-              </thead>
-              <tbody>
-                {incidents.map((r, i) => (
-                  <tr key={i}>
-                    <td><span className="inc__badge inc__badge--type">{r.incidentType}</span></td>
-                    <td className="inc__td-mono">{r.networkName || r.networkId || '—'}</td>
-                    <td className="inc__td-mono">{r.deviceSerial || '—'}</td>
-                    <td className="inc__td-mono">{fmtDate(r.detectedAt)}</td>
-                    <td className="inc__td-mono">{r.manualResolvedAt ? fmtDate(r.manualResolvedAt) : '—'}</td>
-                    <td>
-                      <span
-                        className="inc__badge"
-                        style={{
-                          background: r.downtimeMinutes > 60 ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
-                          color:      r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING,
-                          border:     `1px solid ${r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING}44`
-                        }}
-                      >
-                        {r.downtimeHuman}
-                      </span>
-                    </td>
-                    <td className="inc__td-mono">{r.claimNumber || '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )
-      }
-    </div>
+        {/* Severidad */}
+        <td>
+          <span className="inc__badge" style={{
+            background: (SEVERITY_COLORS[inc.severity] || COLOR_MUTED) + '22',
+            color: SEVERITY_COLORS[inc.severity] || COLOR_MUTED,
+            border: `1px solid ${SEVERITY_COLORS[inc.severity] || COLOR_MUTED}44`
+          }}>
+            {inc.severity}
+          </span>
+        </td>
+
+        {/* Red */}
+        <td className="inc__td-mono">{inc.networkName || inc.networkId || '—'}</td>
+
+        {/* Device */}
+        <td className="inc__td-mono">{inc.deviceSerial || '—'}</td>
+
+        {/* Detectado */}
+        <td className="inc__td-mono">{fmtDate(inc.detectedAt)}</td>
+
+        {/* Resuelto */}
+        <td className="inc__td-mono">
+          {resolvedTs
+            ? fmtDate(resolvedTs)
+            : <span style={{ color: COLOR_ERROR, fontSize: '0.7rem' }}>Still open</span>
+          }
+        </td>
+
+        {/* Downtime */}
+        <td>
+          {inc.downtimeHuman
+            ? (
+              <span className="inc__badge" style={{
+                background: inc.downtimeMinutes > 60 ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
+                color:      inc.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING,
+                border:     `1px solid ${inc.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING}44`
+              }}>
+                {inc.downtimeHuman}
+              </span>
+            )
+            : <span style={{ color: COLOR_ERROR, fontSize: '0.7rem' }}>ongoing</span>
+          }
+        </td>
+
+        {/* Claim # — inline, solo lectura hasta expandir */}
+        <td className="inc__td-mono">
+          {expanded
+            ? (
+              <input
+                className="inc__claim-input"
+                type="text"
+                placeholder="Nro reclamo"
+                value={claim}
+                onChange={e => { setClaim(e.target.value); setDirty(true) }}
+                autoFocus
+              />
+            )
+            : (
+              <span style={{ color: claim ? COLOR_ACCENT : COLOR_MUTED }}>
+                {claim || '—'}
+              </span>
+            )
+          }
+        </td>
+
+        {/* Motivo resolución — solo lectura hasta expandir */}
+        <td className="inc__td-mono" style={{ maxWidth: 180 }}>
+          {expanded
+            ? (
+              <input
+                className="inc__claim-input inc__claim-input--wide"
+                type="text"
+                placeholder="Motivo resolución"
+                value={notes}
+                onChange={e => { setNotes(e.target.value); setDirty(true) }}
+              />
+            )
+            : (
+              <span
+                style={{ color: notes ? COLOR_MUTED : 'rgba(100,116,139,0.45)',
+                         fontSize: '0.7rem',
+                         whiteSpace: 'nowrap', overflow: 'hidden',
+                         display: 'block', maxWidth: 160, textOverflow: 'ellipsis' }}
+                title={notes || ''}
+              >
+                {notes || '—'}
+              </span>
+            )
+          }
+        </td>
+
+        {/* Acciones */}
+        <td style={{ whiteSpace: 'nowrap' }}>
+          {expanded
+            ? (
+              <>
+                <button
+                  className={`inc__save-btn${dirty ? ' inc__save-btn--dirty' : ''}`}
+                  onClick={handleSave}
+                  disabled={!dirty || saving}
+                  title="Guardar"
+                  style={{ marginRight: '0.3rem' }}
+                >
+                  {saving ? '…' : '✔'}
+                </button>
+                <button
+                  className="inc__save-btn"
+                  onClick={() => { setExpanded(false); setDirty(false); setClaim(inc.claimNumber || ''); setNotes(inc.resolutionNotes || '') }}
+                  title="Cancelar"
+                >
+                  ✕
+                </button>
+              </>
+            )
+            : (
+              <button
+                className="inc__edit-btn"
+                onClick={() => setExpanded(true)}
+                title="Editar claim y motivo"
+              >
+                ✎
+              </button>
+            )
+          }
+        </td>
+      </tr>
+    </>
   )
 }
 
-
-// ── Tabla historial (open + resolved del período) ─────────────────────────────
-const HISTORY_PERIOD_OPTIONS = [
-  { value: 7,  label: '1 semana'  },
-  { value: 14, label: '2 semanas' },
-  { value: 30, label: '1 mes'     },
-]
-
-function HistoryTable({ data, loading, histDays, onHistDaysChange }) {
+// ── Tabla History ─────────────────────────────────────────────────────────────
+function HistoryTable({ data, loading, histDays, onHistDaysChange, onSave }) {
   if (loading)
     return <div className="inc__loading"><span className="inc__spinner" /> Loading history…</div>
   if (!data)
@@ -296,7 +372,6 @@ function HistoryTable({ data, loading, histDays, onHistDaysChange }) {
 
   return (
     <div className="inc__panel">
-      {/* Selector de período propio de esta tab */}
       <div className="inc__hist-controls">
         <Text as="h3" className="inc__panel-title" style={{ margin: 0 }}>
           Incidents History
@@ -315,16 +390,12 @@ function HistoryTable({ data, loading, histDays, onHistDaysChange }) {
         </div>
       </div>
 
-      {/* Mini KPIs */}
       <div className="inc__hist-summary">
-        <span className="inc__hist-kpi">
-          Total <strong>{summary.total}</strong>
-        </span>
-        <span className="inc__hist-kpi inc__hist-kpi--open">
-          Open <strong>{summary.open}</strong>
-        </span>
-        <span className="inc__hist-kpi inc__hist-kpi--resolved">
-          Resolved <strong>{summary.resolved}</strong>
+        <span className="inc__hist-kpi">Total <strong>{summary.total}</strong></span>
+        <span className="inc__hist-kpi inc__hist-kpi--open">Open <strong>{summary.open}</strong></span>
+        <span className="inc__hist-kpi inc__hist-kpi--resolved">Resolved <strong>{summary.resolved}</strong></span>
+        <span className="inc__hist-kpi" style={{ marginLeft: 'auto', fontSize: '0.68rem', color: COLOR_MUTED }}>
+          ✎ clic para editar claim y motivo
         </span>
       </div>
 
@@ -344,63 +415,73 @@ function HistoryTable({ data, loading, histDays, onHistDaysChange }) {
                   <th>Resolved</th>
                   <th>Downtime</th>
                   <th>Claim #</th>
+                  <th>Motivo resolución</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                {incidents.map((r, i) => {
-                  const wsCfg = WORK_STATUS_CFG[r.workStatus] || WORK_STATUS_CFG.active
-                  const isOpen = r.status === 'open'
-                  const rowStyle = isOpen
-                    ? { borderLeft: `3px solid ${wsCfg.color}` }
-                    : { opacity: 0.75 }
-                  const resolvedTs = r.manualResolvedAt || r.resolvedAt
+                {incidents.map((r, i) => (
+                  <HistoryIncidentRow key={r._id || i} inc={r} onSave={onSave} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+    </div>
+  )
+}
 
-                  return (
-                    <tr key={i} style={rowStyle}>
-                      {/* Estado combinado */}
-                      <td>
-                        <span className="inc__badge" style={{
-                          background: wsCfg.bg,
-                          color: wsCfg.color,
-                          border: `1px solid ${wsCfg.color}55`
-                        }}>
-                          {isOpen ? wsCfg.label : 'Resolved'}
-                        </span>
-                      </td>
-                      <td><span className="inc__badge inc__badge--type">{r.incidentType}</span></td>
-                      <td>
-                        <span className="inc__badge" style={{
-                          background: (SEVERITY_COLORS[r.severity] || COLOR_MUTED) + '22',
-                          color: SEVERITY_COLORS[r.severity] || COLOR_MUTED,
-                          border: `1px solid ${SEVERITY_COLORS[r.severity] || COLOR_MUTED}44`
-                        }}>
-                          {r.severity}
-                        </span>
-                      </td>
-                      <td className="inc__td-mono">{r.networkName || r.networkId || '—'}</td>
-                      <td className="inc__td-mono">{r.deviceSerial || '—'}</td>
-                      <td className="inc__td-mono">{fmtDate(r.detectedAt)}</td>
-                      <td className="inc__td-mono">
-                        {resolvedTs ? fmtDate(resolvedTs) : <span style={{ color: COLOR_ERROR }}>Still open</span>}
-                      </td>
-                      <td>
-                        {r.downtimeHuman
-                          ? (
-                            <span className="inc__badge" style={{
-                              background: r.downtimeMinutes > 60 ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
-                              color:      r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING,
-                              border:     `1px solid ${r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING}44`
-                            }}>
-                              {r.downtimeHuman}
-                            </span>
-                          )
-                          : <span style={{ color: COLOR_ERROR, fontSize: '0.7rem' }}>ongoing</span>
-                        }
-                      </td>
-                      <td className="inc__td-mono">{r.claimNumber || '—'}</td>
-                    </tr>
-                  )
-                })}
+// ── Tabla Resolved Report ─────────────────────────────────────────────────────
+function ResolvedReportTable({ data }) {
+  if (!data) return null
+  const { summary, incidents } = data
+
+  return (
+    <div className="inc__panel">
+      <Text as="h3" className="inc__panel-title">
+        Resolved Incidents Report
+        <span className="inc__badge inc__badge--count">{summary.total}</span>
+      </Text>
+      <div className="inc__kpi-row" style={{ marginBottom: '1rem' }}>
+        <KpiCard label="Total Resolved"  value={summary.total}              accent />
+        <KpiCard label="Total Downtime"  value={summary.totalDowntimeHuman} />
+        <KpiCard label="Avg Downtime"    value={summary.avgDowntimeHuman}   sub="per incident" />
+        <KpiCard label="Max Downtime"    value={summary.maxDowntimeHuman}   sub="single incident" />
+      </div>
+
+      {incidents.length === 0
+        ? <p className="inc__empty">No resolved incidents in this period</p>
+        : (
+          <div className="inc__table-wrap">
+            <table className="inc__table">
+              <thead>
+                <tr>
+                  <th>Type</th><th>Network</th><th>Device</th>
+                  <th>Detected</th><th>Resolved (manual)</th>
+                  <th>Downtime</th><th>Claim #</th>
+                </tr>
+              </thead>
+              <tbody>
+                {incidents.map((r, i) => (
+                  <tr key={i}>
+                    <td><span className="inc__badge inc__badge--type">{r.incidentType}</span></td>
+                    <td className="inc__td-mono">{r.networkName || r.networkId || '—'}</td>
+                    <td className="inc__td-mono">{r.deviceSerial || '—'}</td>
+                    <td className="inc__td-mono">{fmtDate(r.detectedAt)}</td>
+                    <td className="inc__td-mono">{r.manualResolvedAt ? fmtDate(r.manualResolvedAt) : '—'}</td>
+                    <td>
+                      <span className="inc__badge" style={{
+                        background: r.downtimeMinutes > 60 ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
+                        color:      r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING,
+                        border:     `1px solid ${r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING}44`
+                      }}>
+                        {r.downtimeHuman}
+                      </span>
+                    </td>
+                    <td className="inc__td-mono">{r.claimNumber || '—'}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -420,9 +501,7 @@ function OrgSelector({ orgs, value, onChange }) {
         value={value}
         onChange={e => onChange(e.target.value)}
       >
-        {orgs.map(o => (
-          <option key={o.id} value={o.id}>{o.name}</option>
-        ))}
+        {orgs.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
       </select>
     </div>
   )
@@ -433,48 +512,43 @@ export default function IncidentManagement() {
   const [orgs, setOrgs]               = useState([])
   const [selectedOrg, setSelectedOrg] = useState('')
   const [data, setData]               = useState(null)
-  const [resolvedData, setResolvedData] = useState(null)
-  const [loading, setLoading]         = useState(false)
+  const [resolvedData, setResolvedData]   = useState(null)
+  const [histData, setHistData]           = useState(null)
+  const [loading, setLoading]             = useState(false)
   const [loadingResolved, setLoadingResolved] = useState(false)
-  const [error, setError]             = useState(null)
-  const [days, setDays]               = useState(30)
-  const [activeTab, setActiveTab]     = useState('open')   // 'open' | 'history' | 'resolved'
-  const [histDays, setHistDays]       = useState(7)
-  const [histData, setHistData]       = useState(null)
-  const [loadingHist, setLoadingHist] = useState(false)
+  const [loadingHist, setLoadingHist]     = useState(false)
+  const [error, setError]                 = useState(null)
+  const [days, setDays]                   = useState(30)
+  const [histDays, setHistDays]           = useState(7)
+  const [activeTab, setActiveTab]         = useState('open')  // 'open' | 'history' | 'resolved'
 
-  // ── Cargar lista de orgs al montar ────────────────────────────────────────
+  // ── Cargar orgs ────────────────────────────────────────────────────────────
   useEffect(() => {
     getIncidentOrgs().then(list => {
       if (!list || list.length === 0) return
       setOrgs(list)
-      // Restaurar última org seleccionada o usar la primera
-      const last = localStorage.getItem(LS_ORG_KEY)
+      const last  = localStorage.getItem(LS_ORG_KEY)
       const found = list.find(o => o.id === last)
       setSelectedOrg(found ? found.id : list[0].id)
     })
   }, [])
 
-  // ── Persistir org seleccionada ─────────────────────────────────────────────
   useEffect(() => {
     if (selectedOrg) localStorage.setItem(LS_ORG_KEY, selectedOrg)
   }, [selectedOrg])
 
-  // ── Cargar reporte principal cuando cambia org o período ─────────────────
+  // ── Cargar reporte principal ───────────────────────────────────────────────
   useEffect(() => {
     if (!selectedOrg) return
     setLoading(true)
     setError(null)
     getIncidentReport(selectedOrg, days)
-      .then(resp => {
-        if (resp) setData(resp)
-        else setError('Could not load incident data.')
-      })
+      .then(resp => { if (resp) setData(resp); else setError('Could not load incident data.') })
       .catch(() => setError('Connection error.'))
       .finally(() => setLoading(false))
   }, [selectedOrg, days])
 
-  // ── Cargar reporte de resueltos cuando se activa esa pestaña ─────────────
+  // ── Cargar resolved cuando se activa esa pestaña ──────────────────────────
   useEffect(() => {
     if (activeTab !== 'resolved' || !selectedOrg) return
     setLoadingResolved(true)
@@ -483,7 +557,7 @@ export default function IncidentManagement() {
       .finally(() => setLoadingResolved(false))
   }, [activeTab, selectedOrg, days])
 
-  // ── Cargar historial cuando se activa esa pestaña o cambia el período ────
+  // ── Cargar historial cuando se activa esa pestaña o cambia período ────────
   useEffect(() => {
     if (activeTab !== 'history' || !selectedOrg) return
     setLoadingHist(true)
@@ -492,33 +566,48 @@ export default function IncidentManagement() {
       .finally(() => setLoadingHist(false))
   }, [activeTab, selectedOrg, histDays])
 
-  // ── Guardar workStatus / claimNumber ──────────────────────────────────────
-  const handleSaveIncident = useCallback(async (id, updates) => {
+  // ── Guardar desde Open Incidents (workStatus + claim) ─────────────────────
+  const handleSaveOpenIncident = useCallback(async (id, updates) => {
     const updated = await updateIncidentWorkStatus(id, updates)
     if (!updated) return
-
-    // Si se marcó como resolved, sacarlo de la lista de abiertos
     if (updates.workStatus === 'resolved') {
-      setData(prev => {
-        if (!prev) return prev
-        return {
-          ...prev,
-          recentOpen: prev.recentOpen.filter(i => i._id !== id),
-          kpis: { ...prev.kpis, openIncidents: Math.max(0, prev.kpis.openIncidents - 1) }
-        }
-      })
+      setData(prev => prev ? {
+        ...prev,
+        recentOpen: prev.recentOpen.filter(i => i._id !== id),
+        kpis: { ...prev.kpis, openIncidents: Math.max(0, prev.kpis.openIncidents - 1) }
+      } : prev)
     } else {
-      // Solo actualizar workStatus y claimNumber en la lista
-      setData(prev => {
-        if (!prev) return prev
-        return {
-          ...prev,
-          recentOpen: prev.recentOpen.map(i =>
-            i._id === id ? { ...i, workStatus: updates.workStatus ?? i.workStatus, claimNumber: updates.claimNumber ?? i.claimNumber } : i
-          )
-        }
-      })
+      setData(prev => prev ? {
+        ...prev,
+        recentOpen: prev.recentOpen.map(i =>
+          i._id === id
+            ? { ...i,
+                workStatus:  updates.workStatus  ?? i.workStatus,
+                claimNumber: updates.claimNumber ?? i.claimNumber }
+            : i
+        )
+      } : prev)
     }
+  }, [])
+
+  // ── Guardar desde History (claim + resolutionNotes) ───────────────────────
+  const handleSaveHistoryIncident = useCallback(async (id, updates) => {
+    const updated = await updateIncidentWorkStatus(id, updates)
+    if (!updated) return
+    // Actualizar el dato en histData sin recargar
+    setHistData(prev => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        incidents: prev.incidents.map(i =>
+          i._id === id
+            ? { ...i,
+                claimNumber:     updates.claimNumber     ?? i.claimNumber,
+                resolutionNotes: updates.resolutionNotes ?? i.resolutionNotes }
+            : i
+        )
+      }
+    })
   }, [])
 
   const orgName = orgs.find(o => o.id === selectedOrg)?.name || ''
@@ -535,11 +624,9 @@ export default function IncidentManagement() {
           </Text>
         </div>
         <div className="inc__controls">
-          {/* Selector de organización */}
           {orgs.length > 0 && (
             <OrgSelector orgs={orgs} value={selectedOrg} onChange={setSelectedOrg} />
           )}
-          {/* Selector de período */}
           <div className="inc__period-selector">
             <span className="inc__period-label">Period:</span>
             {PERIOD_OPTIONS.map(d => (
@@ -555,7 +642,7 @@ export default function IncidentManagement() {
         </div>
       </div>
 
-      {/* ── Loading / Error ──────────────────────────────────────────────── */}
+      {/* ── Loading / Error ───────────────────────────────────────────────── */}
       {loading && (
         <div className="inc__loading">
           <span className="inc__spinner" />
@@ -564,19 +651,19 @@ export default function IncidentManagement() {
       )}
       {error && <div className="inc__error">{error}</div>}
 
-      {/* ── Dashboard ─────────────────────────────────────────────────────── */}
+      {/* ── Dashboard ────────────────────────────────────────────────────── */}
       {!loading && data && (
         <>
           {/* KPIs */}
           <div className="inc__kpi-row">
-            <KpiCard label="Total Incidents"  value={data.kpis.totalIncidents}    accent />
-            <KpiCard label="Open"             value={data.kpis.openIncidents}      />
-            <KpiCard label="Resolved"         value={data.kpis.resolvedIncidents}  />
-            <KpiCard label="Avg MTTR"         value={data.kpis.avgMTTR}  unit=" min" sub="Mean Time To Restore" />
+            <KpiCard label="Total Incidents" value={data.kpis.totalIncidents} accent />
+            <KpiCard label="Open"            value={data.kpis.openIncidents} />
+            <KpiCard label="Resolved"        value={data.kpis.resolvedIncidents} />
+            <KpiCard label="Avg MTTR"        value={data.kpis.avgMTTR} unit=" min" sub="Mean Time To Restore" />
             <AvailabilityBadge value={data.kpis.availability} />
           </div>
 
-          {/* Charts row 1: Timeline + By Type */}
+          {/* Charts row 1 */}
           <div className="inc__charts-row">
             <div className="inc__chart-panel inc__chart-panel--wide">
               <Text as="h3" className="inc__panel-title">Incident Timeline — last {days} days</Text>
@@ -593,78 +680,65 @@ export default function IncidentManagement() {
                 </LineChart>
               </ResponsiveContainer>
             </div>
-
             <div className="inc__chart-panel">
               <Text as="h3" className="inc__panel-title">By Type</Text>
-              {data.byType.length === 0
-                ? <p className="inc__empty">No data</p>
-                : (
-                  <ResponsiveContainer width="100%" height={220}>
-                    <PieChart>
-                      <Pie data={data.byType} dataKey="value" nameKey="name"
-                        cx="50%" cy="50%" outerRadius={80}
-                        label={({ name, percent }) => `${name.replace('_', ' ')} ${(percent * 100).toFixed(0)}%`}
-                        labelLine={{ stroke: COLOR_MUTED }}
-                      >
-                        {data.byType.map((_, i) => <Cell key={i} fill={TYPE_COLORS[i % TYPE_COLORS.length]} />)}
-                      </Pie>
-                      <Tooltip content={<ChartTooltip />} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                )
-              }
+              {data.byType.length === 0 ? <p className="inc__empty">No data</p> : (
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie data={data.byType} dataKey="value" nameKey="name"
+                      cx="50%" cy="50%" outerRadius={80}
+                      label={({ name, percent }) => `${name.replace('_', ' ')} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={{ stroke: COLOR_MUTED }}
+                    >
+                      {data.byType.map((_, i) => <Cell key={i} fill={TYPE_COLORS[i % TYPE_COLORS.length]} />)}
+                    </Pie>
+                    <Tooltip content={<ChartTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
 
-          {/* Charts row 2: By Severity + Top Networks */}
+          {/* Charts row 2 */}
           <div className="inc__charts-row">
             <div className="inc__chart-panel">
               <Text as="h3" className="inc__panel-title">By Severity</Text>
-              {data.bySeverity.length === 0
-                ? <p className="inc__empty">No data</p>
-                : (
-                  <ResponsiveContainer width="100%" height={200}>
-                    <BarChart data={data.bySeverity} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis dataKey="name" tick={{ fill: COLOR_MUTED, fontSize: 11 }} />
-                      <YAxis tick={{ fill: COLOR_MUTED, fontSize: 11 }} allowDecimals={false} />
-                      <Tooltip content={<ChartTooltip />} />
-                      <Bar dataKey="value" name="Incidents" radius={[4, 4, 0, 0]}>
-                        {data.bySeverity.map((entry, i) => (
-                          <Cell key={i} fill={SEVERITY_COLORS[entry.name] || COLOR_MUTED} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                )
-              }
+              {data.bySeverity.length === 0 ? <p className="inc__empty">No data</p> : (
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={data.bySeverity} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis dataKey="name" tick={{ fill: COLOR_MUTED, fontSize: 11 }} />
+                    <YAxis tick={{ fill: COLOR_MUTED, fontSize: 11 }} allowDecimals={false} />
+                    <Tooltip content={<ChartTooltip />} />
+                    <Bar dataKey="value" name="Incidents" radius={[4, 4, 0, 0]}>
+                      {data.bySeverity.map((entry, i) => (
+                        <Cell key={i} fill={SEVERITY_COLORS[entry.name] || COLOR_MUTED} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </div>
-
             <div className="inc__chart-panel inc__chart-panel--wide">
               <Text as="h3" className="inc__panel-title">Top Affected Networks</Text>
-              {data.topNetworks.length === 0
-                ? <p className="inc__empty">No data</p>
-                : (
-                  <ResponsiveContainer width="100%" height={200}>
-                    <BarChart data={data.topNetworks} layout="vertical"
-                      margin={{ top: 4, right: 16, left: 8, bottom: 0 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis type="number" tick={{ fill: COLOR_MUTED, fontSize: 10 }} allowDecimals={false} />
-                      <YAxis type="category" dataKey="networkName" width={160}
-                        tick={{ fill: COLOR_MUTED, fontSize: 10 }}
-                        tickFormatter={v => v.length > 22 ? v.slice(0, 22) + '…' : v}
-                      />
-                      <Tooltip content={<ChartTooltip />} />
-                      <Bar dataKey="count" name="Incidents" fill={COLOR_SECONDARY} radius={[0, 4, 4, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                )
-              }
+              {data.topNetworks.length === 0 ? <p className="inc__empty">No data</p> : (
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={data.topNetworks} layout="vertical" margin={{ top: 4, right: 16, left: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis type="number" tick={{ fill: COLOR_MUTED, fontSize: 10 }} allowDecimals={false} />
+                    <YAxis type="category" dataKey="networkName" width={160}
+                      tick={{ fill: COLOR_MUTED, fontSize: 10 }}
+                      tickFormatter={v => v.length > 22 ? v.slice(0, 22) + '…' : v}
+                    />
+                    <Tooltip content={<ChartTooltip />} />
+                    <Bar dataKey="count" name="Incidents" fill={COLOR_SECONDARY} radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
 
-          {/* ── Tabs: Open / History / Resolved ───────────────────────────── */}
+          {/* ── Tabs ──────────────────────────────────────────────────────── */}
           <div className="inc__tabs">
             <button
               className={`inc__tab${activeTab === 'open' ? ' inc__tab--active' : ''}`}
@@ -689,16 +763,17 @@ export default function IncidentManagement() {
             </button>
           </div>
 
-          {/* ── Panel Open ────────────────────────────────────────────────── */}
+          {/* ── Panel Open ───────────────────────────────────────────────── */}
           {activeTab === 'open' && (
             <div className="inc__panel">
-              <Text as="h3" className="inc__panel-title">
-                Open Incidents — {orgName}
-              </Text>
+              <Text as="h3" className="inc__panel-title">Open Incidents — {orgName}</Text>
               <p className="inc__table-hint">
-                Ordená por estado: <strong style={{color: COLOR_ERROR}}>Active</strong> primero, luego <strong style={{color: COLOR_WARNING}}>In Progress</strong>. Al marcar como <strong style={{color: COLOR_SUCCESS}}>Resolved</strong> el incidente se guarda con timestamp y pasa al reporte histórico.
+                Ordená por estado: <strong style={{ color: COLOR_ERROR }}>Active</strong> primero, luego{' '}
+                <strong style={{ color: COLOR_WARNING }}>In Progress</strong>. Al marcar como{' '}
+                <strong style={{ color: COLOR_SUCCESS }}>Resolved</strong> el incidente se guarda con timestamp
+                y pasa al reporte histórico.
               </p>
-              <OpenIncidentsTable rows={data.recentOpen} onSave={handleSaveIncident} />
+              <OpenIncidentsTable rows={data.recentOpen} onSave={handleSaveOpenIncident} />
             </div>
           )}
 
@@ -709,6 +784,7 @@ export default function IncidentManagement() {
               loading={loadingHist}
               histDays={histDays}
               onHistDaysChange={d => setHistDays(d)}
+              onSave={handleSaveHistoryIncident}
             />
           )}
 
