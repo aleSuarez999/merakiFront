@@ -444,6 +444,15 @@ export const getResolvedIncidentsReport = async (orgId = null, days = 30) => {
     }
 }
 
-
-
-
+// GET /api/incidents/history?orgId=X&days=7|14|30
+export const getIncidentHistory = async (orgId = null, days = 7) => {
+    try {
+        const params = new URLSearchParams({ days })
+        if (orgId) params.append('orgId', orgId)
+        const resp = await axiosInstance.get(`/incidents/history?${params}`)
+        return resp.data.ok ? resp.data : null
+    } catch (error) {
+        console.error('getIncidentHistory error:', error.message)
+        return null
+    }
+}

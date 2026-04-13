@@ -7,7 +7,8 @@ import {
   getIncidentReport,
   getIncidentOrgs,
   updateIncidentWorkStatus,
-  getResolvedIncidentsReport
+  getResolvedIncidentsReport,
+  getIncidentHistory
 } from '../utils/api'
 import Text from '../components/Text'
 
