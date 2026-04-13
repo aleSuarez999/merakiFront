@@ -277,138 +277,6 @@ function ResolvedReportTable({ data }) {
   )
 }
 
-
-// ── Tabla historial (open + resolved del período) ─────────────────────────────
-const HISTORY_PERIOD_OPTIONS = [
-  { value: 7,  label: '1 semana'  },
-  { value: 14, label: '2 semanas' },
-  { value: 30, label: '1 mes'     },
-]
-
-function HistoryTable({ data, loading, histDays, onHistDaysChange }) {
-  if (loading)
-    return <div className="inc__loading"><span className="inc__spinner" /> Loading history…</div>
-  if (!data)
-    return <p className="inc__empty">No data</p>
-
-  const { summary, incidents } = data
-
-  return (
-    <div className="inc__panel">
-      {/* Selector de período propio de esta tab */}
-      <div className="inc__hist-controls">
-        <Text as="h3" className="inc__panel-title" style={{ margin: 0 }}>
-          Incidents History
-          <span className="inc__badge inc__badge--count" style={{ marginLeft: '0.5rem' }}>{summary.total}</span>
-        </Text>
-        <div className="inc__hist-period">
-          {HISTORY_PERIOD_OPTIONS.map(opt => (
-            <button
-              key={opt.value}
-              className={`inc__period-btn${histDays === opt.value ? ' inc__period-btn--active' : ''}`}
-              onClick={() => onHistDaysChange(opt.value)}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Mini KPIs */}
-      <div className="inc__hist-summary">
-        <span className="inc__hist-kpi">
-          Total <strong>{summary.total}</strong>
-        </span>
-        <span className="inc__hist-kpi inc__hist-kpi--open">
-          Open <strong>{summary.open}</strong>
-        </span>
-        <span className="inc__hist-kpi inc__hist-kpi--resolved">
-          Resolved <strong>{summary.resolved}</strong>
-        </span>
-      </div>
-
-      {incidents.length === 0
-        ? <p className="inc__empty">No incidents in this period</p>
-        : (
-          <div className="inc__table-wrap">
-            <table className="inc__table">
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Type</th>
-                  <th>Severity</th>
-                  <th>Network</th>
-                  <th>Device</th>
-                  <th>Detected</th>
-                  <th>Resolved</th>
-                  <th>Downtime</th>
-                  <th>Claim #</th>
-                </tr>
-              </thead>
-              <tbody>
-                {incidents.map((r, i) => {
-                  const wsCfg = WORK_STATUS_CFG[r.workStatus] || WORK_STATUS_CFG.active
-                  const isOpen = r.status === 'open'
-                  const rowStyle = isOpen
-                    ? { borderLeft: `3px solid ${wsCfg.color}` }
-                    : { opacity: 0.75 }
-                  const resolvedTs = r.manualResolvedAt || r.resolvedAt
-
-                  return (
-                    <tr key={i} style={rowStyle}>
-                      {/* Estado combinado */}
-                      <td>
-                        <span className="inc__badge" style={{
-                          background: wsCfg.bg,
-                          color: wsCfg.color,
-                          border: `1px solid ${wsCfg.color}55`
-                        }}>
-                          {isOpen ? wsCfg.label : 'Resolved'}
-                        </span>
-                      </td>
-                      <td><span className="inc__badge inc__badge--type">{r.incidentType}</span></td>
-                      <td>
-                        <span className="inc__badge" style={{
-                          background: (SEVERITY_COLORS[r.severity] || COLOR_MUTED) + '22',
-                          color: SEVERITY_COLORS[r.severity] || COLOR_MUTED,
-                          border: `1px solid ${SEVERITY_COLORS[r.severity] || COLOR_MUTED}44`
-                        }}>
-                          {r.severity}
-                        </span>
-                      </td>
-                      <td className="inc__td-mono">{r.networkName || r.networkId || '—'}</td>
-                      <td className="inc__td-mono">{r.deviceSerial || '—'}</td>
-                      <td className="inc__td-mono">{fmtDate(r.detectedAt)}</td>
-                      <td className="inc__td-mono">
-                        {resolvedTs ? fmtDate(resolvedTs) : <span style={{ color: COLOR_ERROR }}>Still open</span>}
-                      </td>
-                      <td>
-                        {r.downtimeHuman
-                          ? (
-                            <span className="inc__badge" style={{
-                              background: r.downtimeMinutes > 60 ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
-                              color:      r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING,
-                              border:     `1px solid ${r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING}44`
-                            }}>
-                              {r.downtimeHuman}
-                            </span>
-                          )
-                          : <span style={{ color: COLOR_ERROR, fontSize: '0.7rem' }}>ongoing</span>
-                        }
-                      </td>
-                      <td className="inc__td-mono">{r.claimNumber || '—'}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )
-      }
-    </div>
-  )
-}
-
 // ── Selector de organización ──────────────────────────────────────────────────
 function OrgSelector({ orgs, value, onChange }) {
   return (
@@ -437,10 +305,7 @@ export default function IncidentManagement() {
   const [loadingResolved, setLoadingResolved] = useState(false)
   const [error, setError]             = useState(null)
   const [days, setDays]               = useState(30)
-  const [activeTab, setActiveTab]     = useState('open')   // 'open' | 'history' | 'resolved'
-  const [histDays, setHistDays]       = useState(7)
-  const [histData, setHistData]       = useState(null)
-  const [loadingHist, setLoadingHist] = useState(false)
+  const [activeTab, setActiveTab]     = useState('open')   // 'open' | 'resolved'
 
   // ── Cargar lista de orgs al montar ────────────────────────────────────────
   useEffect(() => {
@@ -481,15 +346,6 @@ export default function IncidentManagement() {
       .then(resp => setResolvedData(resp || null))
       .finally(() => setLoadingResolved(false))
   }, [activeTab, selectedOrg, days])
-
-  // ── Cargar historial cuando se activa esa pestaña o cambia el período ────
-  useEffect(() => {
-    if (activeTab !== 'history' || !selectedOrg) return
-    setLoadingHist(true)
-    getIncidentHistory(selectedOrg, histDays)
-      .then(resp => setHistData(resp || null))
-      .finally(() => setLoadingHist(false))
-  }, [activeTab, selectedOrg, histDays])
 
   // ── Guardar workStatus / claimNumber ──────────────────────────────────────
   const handleSaveIncident = useCallback(async (id, updates) => {
@@ -663,7 +519,7 @@ export default function IncidentManagement() {
             </div>
           </div>
 
-          {/* ── Tabs: Open / History / Resolved ───────────────────────────── */}
+          {/* ── Tabs: Open / Resolved ─────────────────────────────────────── */}
           <div className="inc__tabs">
             <button
               className={`inc__tab${activeTab === 'open' ? ' inc__tab--active' : ''}`}
@@ -673,12 +529,6 @@ export default function IncidentManagement() {
               <span className="inc__badge inc__badge--count" style={{ marginLeft: '0.5rem' }}>
                 {data.kpis.openIncidents}
               </span>
-            </button>
-            <button
-              className={`inc__tab${activeTab === 'history' ? ' inc__tab--active' : ''}`}
-              onClick={() => setActiveTab('history')}
-            >
-              History
             </button>
             <button
               className={`inc__tab${activeTab === 'resolved' ? ' inc__tab--active' : ''}`}
@@ -699,16 +549,6 @@ export default function IncidentManagement() {
               </p>
               <OpenIncidentsTable rows={data.recentOpen} onSave={handleSaveIncident} />
             </div>
-          )}
-
-          {/* ── Panel History ─────────────────────────────────────────────── */}
-          {activeTab === 'history' && (
-            <HistoryTable
-              data={histData}
-              loading={loadingHist}
-              histDays={histDays}
-              onHistDaysChange={d => setHistDays(d)}
-            />
           )}
 
           {/* ── Panel Resolved ────────────────────────────────────────────── */}
