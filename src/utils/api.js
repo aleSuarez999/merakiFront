@@ -456,3 +456,16 @@ export const getIncidentHistory = async (orgId = null, days = 7) => {
         return null
     }
 }
+
+// GET /api/incidents/recurrence?orgId=X&days=7|14|30
+export const getRecurrenceReport = async (orgId = null, days = 30) => {
+    try {
+        const params = new URLSearchParams({ days })
+        if (orgId) params.append('orgId', orgId)
+        const resp = await axiosInstance.get(`/incidents/recurrence?${params}`)
+        return resp.data.ok ? resp.data : null
+    } catch (error) {
+        console.error('getRecurrenceReport error:', error.message)
+        return null
+    }
+}

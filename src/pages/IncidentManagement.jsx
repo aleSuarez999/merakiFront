@@ -8,7 +8,8 @@ import {
   getIncidentOrgs,
   updateIncidentWorkStatus,
   getResolvedIncidentsReport,
-  getIncidentHistory
+  getIncidentHistory,
+  getRecurrenceReport
 } from '../utils/api'
 import Text from '../components/Text'
 
@@ -491,6 +492,191 @@ function ResolvedReportTable({ data }) {
   )
 }
 
+
+// ── Tabla Reincidencias ───────────────────────────────────────────────────────
+const RECURRENCE_PERIOD_OPTIONS = [
+  { value: 7,  label: '1 semana'  },
+  { value: 14, label: '2 semanas' },
+  { value: 30, label: '1 mes'     },
+  { value: 60, label: '2 meses'   },
+]
+
+function RecurrenceEpisodes({ episodes }) {
+  return (
+    <tr className="inc__recurrence-episodes-row">
+      <td colSpan={6} style={{ padding: 0 }}>
+        <div className="inc__recurrence-episodes">
+          <table className="inc__table inc__table--inner">
+            <thead>
+              <tr>
+                <th>Device</th>
+                <th>Uplink</th>
+                <th>Caída</th>
+                <th>Recuperación</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+              {episodes.map((ep, i) => (
+                <tr key={i}>
+                  <td className="inc__td-mono">{ep.deviceSerial || '—'}</td>
+                  <td className="inc__td-mono">{ep.uplinkInterface || '—'}</td>
+                  <td className="inc__td-mono">{fmtDate(ep.detectedAt)}</td>
+                  <td className="inc__td-mono">{ep.resolvedAt ? fmtDate(ep.resolvedAt) : '—'}</td>
+                  <td>
+                    <span className="inc__badge" style={{
+                      background: ep.downtimeMinutes > 60 ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
+                      color:      ep.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING,
+                      border:     `1px solid ${ep.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING}44`
+                    }}>
+                      {ep.downtimeHuman}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+  )
+}
+
+function RecurrenceNetworkRow({ net }) {
+  const [open, setOpen] = useState(false)
+
+  const riskColor = net.count >= 5 ? COLOR_ERROR
+                  : net.count >= 3 ? COLOR_WARNING
+                  : COLOR_MUTED
+
+  return (
+    <>
+      <tr
+        className="inc__recurrence-row"
+        onClick={() => setOpen(v => !v)}
+        style={{ cursor: 'pointer', borderLeft: `3px solid ${riskColor}` }}
+      >
+        {/* Expand toggle */}
+        <td style={{ width: 28, color: COLOR_MUTED, fontSize: '0.7rem' }}>
+          {open ? '▾' : '▸'}
+        </td>
+
+        {/* Red */}
+        <td>
+          <span style={{ color: COLOR_ACCENT, fontFamily: 'var(--font-mono, monospace)', fontSize: '0.8rem' }}>
+            {net.networkName}
+          </span>
+        </td>
+
+        {/* Episodios */}
+        <td>
+          <span className="inc__badge" style={{
+            background: riskColor + '22',
+            color:      riskColor,
+            border:     `1px solid ${riskColor}55`,
+            fontSize:   '0.78rem',
+            padding:    '0.2rem 0.65rem',
+          }}>
+            {net.count} {net.count === 1 ? 'caída' : 'caídas'}
+          </span>
+        </td>
+
+        {/* Downtime total */}
+        <td className="inc__td-mono">{net.totalDowntimeHuman}</td>
+
+        {/* Downtime promedio */}
+        <td className="inc__td-mono">{net.avgDowntimeHuman}</td>
+
+        {/* Riesgo */}
+        <td>
+          <span style={{ fontSize: '0.68rem', color: riskColor, fontWeight: 600 }}>
+            {net.count >= 5 ? '🔴 Alto' : net.count >= 3 ? '🟡 Medio' : '⚪ Bajo'}
+          </span>
+        </td>
+      </tr>
+
+      {open && <RecurrenceEpisodes episodes={net.episodes} />}
+    </>
+  )
+}
+
+function RecurrenceTable({ data, loading, recurDays, onRecurDaysChange }) {
+  if (loading)
+    return <div className="inc__loading"><span className="inc__spinner" /> Cargando reincidencias…</div>
+  if (!data)
+    return <p className="inc__empty">No data</p>
+
+  const { summary, networks } = data
+
+  return (
+    <div className="inc__panel">
+      {/* Header con selector de período */}
+      <div className="inc__hist-controls">
+        <Text as="h3" className="inc__panel-title" style={{ margin: 0 }}>
+          Reincidencias — auto-recuperadas sin intervención
+          <span className="inc__badge inc__badge--count" style={{ marginLeft: '0.5rem' }}>
+            {summary.totalEpisodes}
+          </span>
+        </Text>
+        <div className="inc__hist-period">
+          {RECURRENCE_PERIOD_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              className={`inc__period-btn${recurDays === opt.value ? ' inc__period-btn--active' : ''}`}
+              onClick={() => onRecurDaysChange(opt.value)}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Mini KPIs */}
+      <div className="inc__hist-summary">
+        <span className="inc__hist-kpi">
+          Redes afectadas <strong>{summary.totalNetworks}</strong>
+        </span>
+        <span className="inc__hist-kpi inc__hist-kpi--open">
+          Total episodios <strong>{summary.totalEpisodes}</strong>
+        </span>
+        {summary.mostUnstable && summary.mostUnstable !== '—' && (
+          <span className="inc__hist-kpi" style={{ color: COLOR_WARNING }}>
+            Más inestable: <strong style={{ color: COLOR_WARNING }}>{summary.mostUnstable}</strong>
+          </span>
+        )}
+        <span className="inc__hist-kpi" style={{ marginLeft: 'auto', fontSize: '0.68rem', color: COLOR_MUTED }}>
+          ▸ clic en la fila para ver episodios
+        </span>
+      </div>
+
+      {networks.length === 0
+        ? <p className="inc__empty">No se registraron reincidencias automáticas en este período</p>
+        : (
+          <div className="inc__table-wrap">
+            <table className="inc__table">
+              <thead>
+                <tr>
+                  <th style={{ width: 28 }}></th>
+                  <th>Red</th>
+                  <th>Episodios</th>
+                  <th>Downtime total</th>
+                  <th>Downtime promedio</th>
+                  <th>Riesgo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {networks.map((net, i) => (
+                  <RecurrenceNetworkRow key={net.networkId || i} net={net} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+    </div>
+  )
+}
+
 // ── Selector de organización ──────────────────────────────────────────────────
 function OrgSelector({ orgs, value, onChange }) {
   return (
@@ -520,7 +706,10 @@ export default function IncidentManagement() {
   const [error, setError]                 = useState(null)
   const [days, setDays]                   = useState(30)
   const [histDays, setHistDays]           = useState(7)
-  const [activeTab, setActiveTab]         = useState('open')  // 'open' | 'history' | 'resolved'
+  const [activeTab, setActiveTab]         = useState('open')  // 'open' | 'history' | 'recurrence' | 'resolved'
+  const [recurDays, setRecurDays]         = useState(30)
+  const [recurData, setRecurData]         = useState(null)
+  const [loadingRecur, setLoadingRecur]   = useState(false)
 
   // ── Cargar orgs ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -556,6 +745,15 @@ export default function IncidentManagement() {
       .then(resp => setResolvedData(resp || null))
       .finally(() => setLoadingResolved(false))
   }, [activeTab, selectedOrg, days])
+
+  // ── Cargar reincidencias cuando se activa esa pestaña o cambia período ─────
+  useEffect(() => {
+    if (activeTab !== 'recurrence' || !selectedOrg) return
+    setLoadingRecur(true)
+    getRecurrenceReport(selectedOrg, recurDays)
+      .then(resp => setRecurData(resp || null))
+      .finally(() => setLoadingRecur(false))
+  }, [activeTab, selectedOrg, recurDays])
 
   // ── Cargar historial cuando se activa esa pestaña o cambia período ────────
   useEffect(() => {
@@ -756,6 +954,12 @@ export default function IncidentManagement() {
               History
             </button>
             <button
+              className={`inc__tab${activeTab === 'recurrence' ? ' inc__tab--active' : ''}`}
+              onClick={() => setActiveTab('recurrence')}
+            >
+              Reincidencias
+            </button>
+            <button
               className={`inc__tab${activeTab === 'resolved' ? ' inc__tab--active' : ''}`}
               onClick={() => setActiveTab('resolved')}
             >
@@ -785,6 +989,16 @@ export default function IncidentManagement() {
               histDays={histDays}
               onHistDaysChange={d => setHistDays(d)}
               onSave={handleSaveHistoryIncident}
+            />
+          )}
+
+          {/* ── Panel Reincidencias ───────────────────────────────────────── */}
+          {activeTab === 'recurrence' && (
+            <RecurrenceTable
+              data={recurData}
+              loading={loadingRecur}
+              recurDays={recurDays}
+              onRecurDaysChange={d => setRecurDays(d)}
             />
           )}
 

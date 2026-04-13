@@ -703,3 +703,46 @@
   &--open strong    { color: $color-error; }
   &--resolved strong { color: $color-success; }
 }
+
+// ── Reincidencias: filas expandibles ─────────────────────────────────────────
+.inc__recurrence-row {
+  transition: background 0.15s ease;
+
+  &:hover td { background: $color-bg-elevated; }
+}
+
+.inc__recurrence-episodes-row td {
+  padding: 0 !important;
+  background: $color-bg-deep;
+}
+
+.inc__recurrence-episodes {
+  padding: 0.5rem 1.5rem 0.75rem 2.5rem;
+  border-bottom: 1px solid $color-border-subtle;
+  animation: inc-expand 0.18s ease;
+}
+
+@keyframes inc-expand {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// Tabla interna de episodios (dentro de la fila expandida)
+.inc__table--inner {
+  background: transparent;
+
+  th {
+    font-size: 0.6rem;
+    color: $color-text-muted;
+    padding: 0.25rem 0.5rem;
+    border-bottom-color: rgba(255,255,255,0.05);
+  }
+
+  td {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.5rem;
+    border-bottom-color: rgba(255,255,255,0.03);
+  }
+
+  tr:last-child td { border-bottom: none; }
+}
