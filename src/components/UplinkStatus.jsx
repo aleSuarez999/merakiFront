@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from './Box';
 import UplinkStatusChart from './UplinkStatusChart';
-import { getOrganizationApplianceUplinkStatuses } from '../utils/api';
+import { getOrganizationApplianceUplinkStatuses, getVpnStatus } from '../utils/api';
 
 function UplinkStatus({ org }) {
+  const navigate = useNavigate();
   const [uplinkStatus1, setUplinkStatus] = useState([]);
   const [charData, setCharData] = useState([]);
   const [uplinkCount, setUplinkCount] = useState(0);
   const [activeUplinkCount, setActiveUplinkCount] = useState(0);
+  const [vpnDownCount, setVpnDownCount] = useState(0);
 
   const fetchUplinks = async () => {
     const data = await getOrganizationApplianceUplinkStatuses(org.id);
@@ -20,8 +23,16 @@ function UplinkStatus({ org }) {
 
   useEffect(() => {
     fetchUplinks(); // primera carga
-    const interval = setInterval(fetchUplinks, 20000); // cada 20 segundos
+    const interval = setInterval(fetchUplinks, 60000); // cada 20 segundos
     return () => clearInterval(interval); // limpieza al desmontar
+  }, [org]);
+
+  // ── VPN status: fetch una vez por org (cron refresca cada 10 min) ──────────
+  useEffect(() => {
+    if (!org?.id) return;
+    getVpnStatus(org.id).then(d => {
+      setVpnDownCount(d?.summary?.downPeers || 0);
+    });
   }, [org]);
 
   useEffect(() => {
@@ -74,6 +85,22 @@ function UplinkStatus({ org }) {
                 <li className="jcsb d-flex uplink-last-warning">
                   <span>⚠ Risk</span>
                   <span>{sitiosEnRiesgo.length}</span>
+                </li>
+              )}
+
+              {/* Alerta: VPN peers caídos */}
+              {vpnDownCount > 0 && (
+                <li
+                  className="jcsb d-flex uplink-vpn-warning"
+                  onClick={() => {
+                    localStorage.setItem('vpn_last_org', org.id);
+                    navigate('/reports/vpn');
+                  }}
+                  style={{ cursor: 'pointer' }}
+                  title="Ver detalle VPN"
+                >
+                  <span>⚠ VPN</span>
+                  <span>{vpnDownCount}↓</span>
                 </li>
               )}
 

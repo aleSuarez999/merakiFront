@@ -69,6 +69,18 @@
   50%       { opacity: 0.45; }
 }
 
+// ── Warning: VPN peers caídos (clickeable, navega a VPN Dashboard) ───────────
+.uplink-vpn-warning {
+  color: #ef4444;
+  font-weight: 700;
+  font-family: $font-mono;
+  animation: pulse-warning 1.8s ease-in-out infinite;
+  &:hover {
+    opacity: 0.75;
+    text-decoration: underline;
+  }
+}
+
 // ── Banner resumen de alerta ─────────────────────────────────────────────────
 .uplink-last-banner {
   display: flex;
