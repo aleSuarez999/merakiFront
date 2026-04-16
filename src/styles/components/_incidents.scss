@@ -746,3 +746,54 @@
 
   tr:last-child td { border-bottom: none; }
 }
+
+// ── VPN Dashboard ─────────────────────────────────────────────────────────────
+.vpn__network-card {
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-md;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+
+  &:hover { border-color: $color-border-accent; }
+}
+
+.vpn__network-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  background: $color-bg-elevated;
+  transition: background 0.15s ease;
+
+  &:hover { background: $color-bg-card; }
+}
+
+.vpn__network-name {
+  font-family: $font-mono;
+  font-size: 0.82rem;
+  color: $color-text;
+  font-weight: 600;
+}
+
+.vpn__network-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.vpn__peers-wrap {
+  padding: 0.5rem 0.9rem 0.75rem;
+  background: $color-bg-deep;
+  animation: inc-expand 0.18s ease;
+}
+
+.vpn__peer-type-label {
+  font-family: $font-mono;
+  font-size: 0.63rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $color-text-muted;
+  margin: 0.4rem 0 0.2rem 0;
+}

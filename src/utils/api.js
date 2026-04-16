@@ -469,3 +469,80 @@ export const getRecurrenceReport = async (orgId = null, days = 30) => {
         return null
     }
 }
+
+// ── VPN ───────────────────────────────────────────────────────────────────────
+
+export const getVpnOrgs = async () => {
+  try {
+    const resp = await axiosInstance.get('/vpn/orgs')
+    return resp.data.ok ? resp.data.orgs : []
+  } catch (e) { console.error('getVpnOrgs:', e.message); return [] }
+}
+
+export const getVpnStatus = async (orgId) => {
+  try {
+    const resp = await axiosInstance.get(`/vpn/status?orgId=${orgId}`)
+    return resp.data.ok ? resp.data : null
+  } catch (e) { console.error('getVpnStatus:', e.message); return null }
+}
+
+export const getVpnOpenIncidents = async (orgId) => {
+  try {
+    const resp = await axiosInstance.get(`/vpn/incidents?orgId=${orgId}`)
+    return resp.data.ok ? resp.data.incidents : []
+  } catch (e) { console.error('getVpnOpenIncidents:', e.message); return [] }
+}
+
+export const updateVpnIncidentStatus = async (id, { workStatus, claimNumber, resolutionNotes }) => {
+  try {
+    const resp = await axiosInstance.patch(`/vpn/incidents/${id}/status`, { workStatus, claimNumber, resolutionNotes })
+    return resp.data.ok ? resp.data.incident : null
+  } catch (e) { console.error('updateVpnIncidentStatus:', e.message); return null }
+}
+
+export const getVpnRecurrence = async (orgId, days = 30) => {
+  try {
+    const params = new URLSearchParams({ days })
+    if (orgId) params.append('orgId', orgId)
+    const resp = await axiosInstance.get(`/vpn/recurrence?${params}`)
+    return resp.data.ok ? resp.data : null
+  } catch (e) { console.error('getVpnRecurrence:', e.message); return null }
+}
+
+// ── VPN Events ────────────────────────────────────────────────────────────────
+
+export const getVpnEventNetworks = async (orgId) => {
+  try {
+    const resp = await axiosInstance.get(`/vpn-events/networks?orgId=${orgId}`)
+    return resp.data.ok ? resp.data.networks : []
+  } catch (e) { return [] }
+}
+
+export const getVpnEventsRecent = async (orgId, networkId = null, hours = 24) => {
+  try {
+    const params = new URLSearchParams({ hours })
+    if (orgId)     params.append('orgId',     orgId)
+    if (networkId) params.append('networkId', networkId)
+    const resp = await axiosInstance.get(`/vpn-events/recent?${params}`)
+    return resp.data.ok ? resp.data : null
+  } catch (e) { return null }
+}
+
+export const getVpnTunnelAnalysis = async (orgId, days = 7, networkId = null) => {
+  try {
+    const params = new URLSearchParams({ days })
+    if (orgId)     params.append('orgId',     orgId)
+    if (networkId) params.append('networkId', networkId)
+    const resp = await axiosInstance.get(`/vpn-events/tunnel-analysis?${params}`)
+    return resp.data.ok ? resp.data : null
+  } catch (e) { return null }
+}
+
+export const getVpnEventStats = async (orgId, days = 7) => {
+  try {
+    const params = new URLSearchParams({ days })
+    if (orgId) params.append('orgId', orgId)
+    const resp = await axiosInstance.get(`/vpn-events/stats?${params}`)
+    return resp.data.ok ? resp.data : null
+  } catch (e) { return null }
+}
