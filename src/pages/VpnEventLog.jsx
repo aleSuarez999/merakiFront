@@ -165,7 +165,7 @@ function EventLogPanel({ orgId, networkId, hours, onHoursChange }) {
   )
 }
 
-// ── Panel: Análisis de tunnels ────────────────────────────────────────────────
+// ── Panel: Análisis de túneles ────────────────────────────────────────────────
 function TunnelAnalysisPanel({ orgId, networkId, days, onDaysChange }) {
   const [data, setData]         = useState(null)
   const [loading, setLoading]   = useState(false)
@@ -184,7 +184,7 @@ function TunnelAnalysisPanel({ orgId, networkId, days, onDaysChange }) {
     <div className="inc__panel">
       <div className="inc__hist-controls">
         <Text as="h3" className="inc__panel-title" style={{ margin: 0 }}>
-          Análisis de Tunnels
+          Análisis de túneles
           {data && (
             <span className="inc__badge inc__badge--count" style={{ marginLeft: '0.5rem' }}>
               {data.summary?.totalTunnels}
@@ -203,13 +203,13 @@ function TunnelAnalysisPanel({ orgId, networkId, days, onDaysChange }) {
         </div>
       </div>
 
-      {loading && <div className="inc__loading"><span className="inc__spinner" /> Analizando tunnels…</div>}
+      {loading && <div className="inc__loading"><span className="inc__spinner" /> Analizando túneles…</div>}
 
       {!loading && data && (
         <>
           {/* Mini KPIs */}
           <div className="inc__hist-summary">
-            <span className="inc__hist-kpi">Tunnels con caídas <strong>{data.summary?.totalTunnels}</strong></span>
+            <span className="inc__hist-kpi">Túneles con caídas <strong>{data.summary?.totalTunnels}</strong></span>
             <span className="inc__hist-kpi" style={{ color: COLOR_ERROR }}>
               Alto riesgo <strong style={{ color: COLOR_ERROR }}>{data.summary?.highRisk}</strong>
             </span>
@@ -227,7 +227,7 @@ function TunnelAnalysisPanel({ orgId, networkId, days, onDaysChange }) {
           </div>
 
           {data.tunnels.length === 0
-            ? <p className="inc__empty">Sin caídas de tunnels registradas en este período.</p>
+            ? <p className="inc__empty">Sin caídas de túneles registradas en este período.</p>
             : (
               <div className="inc__table-wrap">
                 <table className="inc__table">
@@ -256,7 +256,24 @@ function TunnelAnalysisPanel({ orgId, networkId, days, onDaysChange }) {
                           >
                             <td style={{ color: COLOR_MUTED, fontSize: '0.7rem' }}>{isOpen ? '▾' : '▸'}</td>
                             <td className="inc__td-mono">{t.networkName}</td>
-                            <td className="inc__td-mono">{t.peerContact}</td>
+                            <td>
+                              <span style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                                {/* Nombre de la red del spoke si se correlacionó */}
+                                {t.peerNetworkName
+                                  ? <span style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: 'var(--color-accent, #00d4ff)', fontWeight: 600 }}>
+                                      {t.peerNetworkName}
+                                    </span>
+                                  : null
+                                }
+                                {/* IP:PUERTO siempre visible — en gris si hay nombre, destacada si no */}
+                                <span className="inc__td-mono" style={{
+                                  fontSize: t.peerNetworkName ? '0.68rem' : '0.8rem',
+                                  color: t.peerNetworkName ? 'var(--color-text-muted, #64748b)' : 'inherit',
+                                }}>
+                                  {t.peerContact}
+                                </span>
+                              </span>
+                            </td>
                             <td>
                               <span className="inc__badge" style={{
                                 background: risk.color + '22', color: risk.color,
@@ -473,7 +490,7 @@ export default function VpnEventLog() {
         <div className="inc__header-left">
           <Text as="h2" className="inc__title">VPN Event Log</Text>
           <Text as="p" className="inc__subtitle">
-            Log histórico de eventos VPN — cambios de conectividad de tunnels · recolección cada hora
+            Log histórico de eventos VPN — cambios de conectividad de túneles · recolección cada hora
           </Text>
         </div>
         <div className="inc__controls">
@@ -509,7 +526,7 @@ export default function VpnEventLog() {
         </button>
         <button className={`inc__tab${activeTab === 'tunnels' ? ' inc__tab--active' : ''}`}
           onClick={() => setActiveTab('tunnels')}>
-          Análisis de Tunnels
+          Análisis de túneles
         </button>
         <button className={`inc__tab${activeTab === 'stats' ? ' inc__tab--active' : ''}`}
           onClick={() => setActiveTab('stats')}>
