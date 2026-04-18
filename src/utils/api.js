@@ -546,3 +546,47 @@ export const getVpnEventStats = async (orgId, days = 7) => {
     return resp.data.ok ? resp.data : null
   } catch (e) { return null }
 }
+
+// ── Customer Portal ───────────────────────────────────────────────────────────
+
+export const getPortalOrgs = async () => {
+  try {
+    const resp = await axiosInstance.get('/portal/orgs')
+    return resp.data.ok ? resp.data.orgs : []
+  } catch (e) { return [] }
+}
+
+export const getPortalStatusMap = async (orgId = null) => {
+  try {
+    const params = orgId ? `?orgId=${orgId}` : ''
+    const resp = await axiosInstance.get(`/portal/status-map${params}`)
+    return resp.data.ok ? resp.data : null
+  } catch (e) { return null }
+}
+
+export const getPortalPathControl = async (orgId, networkId = null) => {
+  try {
+    const params = new URLSearchParams({ orgId })
+    if (networkId) params.append('networkId', networkId)
+    const resp = await axiosInstance.get(`/portal/path-control?${params}`)
+    return resp.data.ok ? resp.data : null
+  } catch (e) { return null }
+}
+
+export const getPortalUsage = async (orgId) => {
+  try {
+    const resp = await axiosInstance.get(`/portal/usage?orgId=${orgId}`)
+    return resp.data.ok ? resp.data : null
+  } catch (e) { return null }
+}
+
+export const getPortalInventory = async (orgId, filters = {}) => {
+  try {
+    const params = new URLSearchParams({ orgId })
+    if (filters.networkId)   params.append('networkId',   filters.networkId)
+    if (filters.productType) params.append('productType', filters.productType)
+    if (filters.status)      params.append('status',      filters.status)
+    const resp = await axiosInstance.get(`/portal/inventory?${params}`)
+    return resp.data.ok ? resp.data : null
+  } catch (e) { return null }
+}

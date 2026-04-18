@@ -14,7 +14,8 @@ import { NetworkProvider } from '../context/networkContext';
 import PrivateRoute from './PrivateRoutes';
 import IncidentManagement from '../pages/IncidentManagement';
 import VpnDashboard  from '../pages/VpnDashboard';
-import VpnEventLog   from '../pages/VpnEventLog';
+import VpnEventLog      from '../pages/VpnEventLog';
+import CustomerPortal   from '../pages/CustomerPortal';
 import CUEstadisticas from '../pages/CUEstadisticas';
 const isProduction = import.meta.env.VITE_PRODUCTION === 'true';
 const basename = isProduction ? '/help2/merakiApp' : '/';
@@ -42,6 +43,7 @@ function AppRoutes() {
             <Route path="/reports/incidents" element={<PrivateRoute><IncidentManagement /></PrivateRoute>} />
             <Route path="/reports/vpn"          element={<PrivateRoute><VpnDashboard /></PrivateRoute>} />
             <Route path="/reports/vpn-events"  element={<PrivateRoute><VpnEventLog /></PrivateRoute>} />
+            <Route path="/portal"             element={<PrivateRoute><CustomerPortal /></PrivateRoute>} />
                     
 
         </Route>

@@ -46,6 +46,7 @@ function Navbar() {
                     <NavLink to="/reports/incidents">Inc Mgmnt</NavLink>
                     <NavLink to="/reports/vpn">VPN Status</NavLink>
                     <NavLink to="/reports/vpn-events">VPN Event Log</NavLink>
+                    <NavLink to="/portal">Customer Portal</NavLink>
                     <NavLink to="/reports/CUEstadisticas">CUEstadisticas</NavLink>
                   </div>
                 </div>
