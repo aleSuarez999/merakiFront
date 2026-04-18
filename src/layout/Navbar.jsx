@@ -36,7 +36,8 @@ function Navbar() {
 
                 <NavLink to="/Devices" >Devices</NavLink>
                 <NavLink to="/Uplinks" >Uplinks</NavLink>
-                {/* Reports dropdown */}
+                <NavLink to="/reports/vpn" >VPN Status</NavLink>
+                {/* Reports dropdown — históricos y acumulados */}
                 <div className="navbar__dropdown">
                   <button className="navbar__dropdown-trigger">
                     Reports
@@ -44,7 +45,6 @@ function Navbar() {
                   </button>
                   <div className="navbar__dropdown-menu">
                     <NavLink to="/reports/incidents">Inc Mgmnt</NavLink>
-                    <NavLink to="/reports/vpn">VPN Status</NavLink>
                     <NavLink to="/reports/vpn-events">VPN Event Log</NavLink>
                     <NavLink to="/portal">Customer Portal</NavLink>
                     <NavLink to="/reports/CUEstadisticas">CUEstadisticas</NavLink>
