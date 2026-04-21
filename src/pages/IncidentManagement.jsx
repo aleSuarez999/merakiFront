@@ -264,23 +264,29 @@ function ResolvedReportTable({ data }) {
               </thead>
               <tbody>
                 {incidents.map((r, i) => (
-                  <tr key={i}>
+                  <tr key={i} style={r.isDuplicateInGroup ? { opacity: 0.6 } : {}}>
                     <td><span className="inc__badge inc__badge--type">{r.incidentType}</span></td>
                     <td className="inc__td-mono">{r.networkName || r.networkId || '—'}</td>
                     <td className="inc__td-mono">{r.deviceSerial || '—'}</td>
                     <td className="inc__td-mono">{fmtDate(r.detectedAt)}</td>
                     <td className="inc__td-mono">{r.manualResolvedAt ? fmtDate(r.manualResolvedAt) : '—'}</td>
                     <td>
-                      <span
-                        className="inc__badge"
-                        style={{
-                          background: r.downtimeMinutes > 60 ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
-                          color:      r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING,
-                          border:     `1px solid ${r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING}44`
-                        }}
-                      >
-                        {r.downtimeHuman}
-                      </span>
+                      {r.isDuplicateInGroup
+                        ? <span style={{ fontSize: '0.68rem', color: '#64748b', fontStyle: 'italic' }}
+                            title="Mismo equipo y claim — downtime ya contabilizado en el vínculo principal">
+                            ↳ mismo equipo
+                          </span>
+                        : <span
+                            className="inc__badge"
+                            style={{
+                              background: r.downtimeMinutes > 60 ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
+                              color:      r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING,
+                              border:     `1px solid ${r.downtimeMinutes > 60 ? COLOR_ERROR : COLOR_WARNING}44`
+                            }}
+                          >
+                            {r.downtimeHuman}
+                          </span>
+                      }
                     </td>
                     <td className="inc__td-mono">{r.claimNumber || '—'}</td>
                   </tr>
@@ -544,7 +550,7 @@ export default function IncidentManagement() {
             >
               Open Incidents
               <span className="inc__badge inc__badge--count" style={{ marginLeft: '0.5rem' }}>
-                {data.kpis.openIncidents}
+                {data.recentOpen?.length ?? data.kpis.openIncidents}
               </span>
             </button>
             <button
