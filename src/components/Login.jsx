@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
-import logo from "../assets/logo.webp";
+import logo from "../assets/personal-tech-logo-blanco.svg";
 import ciscoLogo from "../assets/cisco.svg";
 
 
@@ -15,8 +15,7 @@ function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-
-const alreadyHandled = useRef(false);
+  const alreadyHandled = useRef(false);
 
 useEffect(() => {
   if (alreadyHandled.current) return;
@@ -56,7 +55,7 @@ useEffect(() => {
     <div className="login-wrapper">
       
          
-      <img src={logo} alt="logo" className='logo' />SD-WAN
+      <img src={logo} alt="logo" className='login-logo' />SD-WAN
       <h3><img src={ciscoLogo} alt="logo" className='logo' /></h3>
  
 <div className="login__container">

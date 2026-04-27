@@ -2,7 +2,8 @@ import Text from '../components/Text'
 import { NavLink } from 'react-router'
 import Box from '../components/Box'
 import { jwtDecode } from "jwt-decode"
-import logo from "../assets/logo.webp";
+import logo from "../assets/personal-tech-logo-blanco.svg";
+
 import { useNavigate } from 'react-router';
 
 function Navbar() {
@@ -25,7 +26,7 @@ function Navbar() {
 
   return (
        <Box className="navbar__container" >
-             <img src={logo} alt="logo" />
+             <img src={logo} alt="logo" className='navbar__logo' />
 
 
             <NavLink to="/" >
