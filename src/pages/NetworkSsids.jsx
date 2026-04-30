@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { getNetworkSsids, getOrgsSinFiltro, getNetworksByOrg, copySsids } from '../utils/api';
+import { getNetworkSsids, getOrgs, getNetworksByOrg, copySsids } from '../utils/api';
 import Box from '../components/Box';
 import CardSsids from '../components/CardSsids';
 import { jwtDecode } from 'jwt-decode';
@@ -80,7 +80,7 @@ export default function Networkssids() {
 
   useEffect(() => {
     const fetchOrgs = async () => {
-      const orgs = await getOrgsSinFiltro();
+      const orgs = await getOrgs();
       // esto es para poder elegir el tecotest que filtro para los gráficos
       setOrganizations(orgs);
     };

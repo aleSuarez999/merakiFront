@@ -44,7 +44,7 @@ export const getOrgs = async () => {
         return resp.data.orgs
     }
 }
-
+/*
 export const getOrgsSinFiltro = async () => {
     const resp = await axiosInstance.get("/organizations/sinFiltro")
     //console.log(resp.data.orgs)
@@ -54,6 +54,7 @@ export const getOrgsSinFiltro = async () => {
         return resp.data.orgs
     }
 }
+    */
 
 export const getNetworksByOrg = async (orgId) => {
     try{

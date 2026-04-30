@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { getNetworkVlans, getOrgsSinFiltro, getNetworksByOrg, copyVlans } from '../utils/api';
+//import { getNetworkVlans, getOrgsSinFiltro, getNetworksByOrg, copyVlans } from '../utils/api';
+import { getNetworkVlans, getOrgs, getNetworksByOrg, copyVlans } from '../utils/api';
 import Box from '../components/Box';
 import CardVlans from '../components/CardVlans';
 
@@ -52,7 +53,7 @@ export default function NetworkVlans2() {
 
   useEffect(() => {
     const fetchOrgs = async () => {
-      const orgs = await getOrgsSinFiltro();
+      const orgs = await getOrgs();
       // esto es para poder elegir el tecotest que filtro para los gráficos
       setOrganizations(orgs);
     };
