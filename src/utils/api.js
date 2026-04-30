@@ -590,3 +590,4 @@ export const getPortalInventory = async (orgId, filters = {}) => {
     return resp.data.ok ? resp.data : null
   } catch (e) { return null }
 }
+

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Box from './Box';
 import UplinkStatusChart from './UplinkStatusChart';
+import DeviceTypeStatus from './DeviceTypeStatus';
 import { getOrganizationApplianceUplinkStatuses, getVpnStatus } from '../utils/api';
 
 function UplinkStatus({ org }) {
@@ -108,7 +109,7 @@ function UplinkStatus({ org }) {
           </Box>
         </>
       ) : (
-        <><br></br>No informacion de uplinks</>
+        <DeviceTypeStatus orgId={org.id} />
       )}
     </>
   );

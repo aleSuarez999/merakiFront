@@ -1,37 +1,22 @@
-import React, { useContext } from 'react'
 import Text from './Text'
-import { NavLink, useNavigate } from 'react-router'
+import { NavLink } from 'react-router'
+import Box from './Box'
+import UplinkStatus from './UplinkStatus'
 
-import Box from './Box';
-
-import UplinkStatus from './UplinkStatus';
-import UplinkStatuses from '../pages/UplinkStatuses';
-
-
-function CardUplink({
-    org,
-    onClick,
-    ...props
-    
-
-}) {
-
-
-  const navigate = useNavigate();
-
+function CardUplink({ org, onClick, onHasUplink }) {
   return (
-      <>
-         
-          <Box className="card__body" onClick={onClick}>
-            <NavLink to={`/UplinkStatuses/${org.id}`}   >
-              <Text as="p" className="card__title">{org.name}</Text>
-              </NavLink>
-              <Box className="d-flex card__status">
-                <UplinkStatus org={org} />
-                
-              </Box>
-          </Box>
-    </>
+    <Box className="card__body" onClick={onClick}>
+      <NavLink to={`/UplinkStatuses/${org.id}`}>
+        <Text as="p" className="card__title">{org.name}</Text>
+      </NavLink>
+
+      <Box className="d-flex card__status">
+        <UplinkStatus
+          org={org}
+          onHasData={(hasData) => onHasUplink?.(org.id, hasData)}
+        />
+      </Box>
+    </Box>
   )
 }
 

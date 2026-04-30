@@ -100,14 +100,22 @@
   }
 }
 
+
 .login-wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* vertical */
-  align-items: center;     /* horizontal */
-  height: 100vh;           /* ocupa toda la pantalla */
+  justify-content:flex-start;
+  align-items: center;
+  height: 100vh;
+  gap: 1.5rem;
 }
 
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
 .logo {
   margin-bottom: 5px;
   width: 120px; /* opcional */
@@ -116,4 +124,39 @@
 .login-logo {
   height: 75px;
   width: auto;
+}
+
+
+.login-logo {
+  height: 75px;
+  width: auto;
+   
+}
+
+.login-sdwan {
+  color: #f7f7f7;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-family: $font-mono;
+}
+
+.login-cisco {
+  height: 36px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  //opacity: 0.6;
+   
+}
+.mds-header-branding-name{
+  a{
+  color: #f7f7f7;
+  }
+   
+}
+
+
+.logo {
+  margin-bottom: 5px;
+  width: 120px;
 }
